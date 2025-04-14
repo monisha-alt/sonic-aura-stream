@@ -13,6 +13,8 @@ interface PlayerControlsProps {
     cover: string;
   };
   handlePlayPause: () => void;
+  handleSkipForward: () => void;
+  handleSkipBack: () => void;
   progress: number[];
   setProgress: (value: number[]) => void;
   volume: number[];
@@ -23,11 +25,33 @@ const PlayerControls = ({
   isPlaying,
   currentSong,
   handlePlayPause,
+  handleSkipForward,
+  handleSkipBack,
   progress,
   setProgress,
   volume,
   setVolume
 }: PlayerControlsProps) => {
+  // Calculate current playback time based on progress percentage
+  const getCurrentTime = () => {
+    const totalSeconds = parsePlaybackTime(currentSong.duration);
+    const currentSeconds = Math.floor(totalSeconds * progress[0] / 100);
+    return formatPlaybackTime(currentSeconds);
+  };
+  
+  // Convert "3:45" format to total seconds
+  const parsePlaybackTime = (time: string) => {
+    const [minutes, seconds] = time.split(':').map(Number);
+    return minutes * 60 + seconds;
+  };
+  
+  // Format seconds to "m:ss" format
+  const formatPlaybackTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 p-4">
       <div className="flex flex-col md:flex-row items-center">
@@ -48,7 +72,7 @@ const PlayerControls = ({
         
         <div className="w-full md:w-1/3 flex flex-col items-center space-y-2 my-4 md:my-0">
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={handleSkipBack}>
               <SkipBack className="h-5 w-5" />
             </Button>
             <Button 
@@ -59,12 +83,12 @@ const PlayerControls = ({
             >
               {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" onClick={handleSkipForward}>
               <SkipForward className="h-5 w-5" />
             </Button>
           </div>
           <div className="w-full flex items-center space-x-2">
-            <span className="text-xs text-gray-400">1:08</span>
+            <span className="text-xs text-gray-400">{getCurrentTime()}</span>
             <Slider 
               value={progress} 
               max={100}

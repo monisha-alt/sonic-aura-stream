@@ -2,13 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
-
-interface SongType {
-  id: number;
-  title: string;
-  artist: string;
-  duration: string;
-}
+import { SongType } from "@/data";
 
 interface RecommendedSongsProps {
   songs: SongType[];
@@ -24,9 +18,16 @@ const RecommendedSongs = ({ songs }: RecommendedSongsProps) => {
             key={song.id}
             className="flex justify-between items-center p-3 rounded-md hover:bg-gray-800"
           >
-            <div>
-              <p className="font-medium">{song.title}</p>
-              <p className="text-sm text-gray-400">{song.artist}</p>
+            <div className="flex items-center">
+              <img 
+                src={song.cover} 
+                alt={`${song.title} cover`}
+                className="w-10 h-10 rounded mr-3"
+              />
+              <div>
+                <p className="font-medium">{song.title}</p>
+                <p className="text-sm text-gray-400">{song.artist}</p>
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-400">{song.duration}</span>

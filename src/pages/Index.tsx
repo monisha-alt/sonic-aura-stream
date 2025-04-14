@@ -7,55 +7,24 @@ import CurrentSongDisplay from "@/components/CurrentSongDisplay";
 import RecommendedSongs from "@/components/RecommendedSongs";
 import MoodGenerator from "@/components/MoodGenerator";
 import PlayerControls from "@/components/PlayerControls";
+import { songs, playlists } from "@/data";
 
 const Index = () => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [currentSong, setCurrentSong] = useState({
-    title: "Cosmic Harmony",
-    artist: "Neural Waves",
-    duration: "3:45",
-    cover: "https://placehold.co/400x400/8B5CF6/FFFFFF?text=Cosmic+Harmony"
+    title: songs[0].title,
+    artist: songs[0].artist,
+    duration: songs[0].duration,
+    cover: songs[0].cover
   });
   const [volume, setVolume] = useState([50]);
-  const [progress, setProgress] = useState([30]);
+  const [progress, setProgress] = useState([0]);
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
   const { toast } = useToast();
 
-  // Mock playlist of songs for real-time rotation
-  const songPlaylist = [
-    {
-      title: "Cosmic Harmony",
-      artist: "Neural Waves",
-      duration: "3:45",
-      cover: "https://placehold.co/400x400/8B5CF6/FFFFFF?text=Cosmic+Harmony"
-    },
-    {
-      title: "Digital Dreams",
-      artist: "The Algorithms",
-      duration: "4:12",
-      cover: "https://placehold.co/400x400/6366F1/FFFFFF?text=Digital+Dreams"
-    },
-    {
-      title: "Neural Network",
-      artist: "Binary Beats",
-      duration: "3:28",
-      cover: "https://placehold.co/400x400/A855F7/FFFFFF?text=Neural+Network"
-    },
-    {
-      title: "Quantum Waves",
-      artist: "AI Collective",
-      duration: "5:01",
-      cover: "https://placehold.co/400x400/EC4899/FFFFFF?text=Quantum+Waves"
-    }
-  ];
-
-  // Mock recommended songs
-  const recommendedSongs = [
-    { id: 1, title: "Digital Dreams", artist: "The Algorithms", duration: "4:12" },
-    { id: 2, title: "Neural Network", artist: "Binary Beats", duration: "3:28" },
-    { id: 3, title: "Quantum Waves", artist: "AI Collective", duration: "5:01" },
-    { id: 4, title: "Synthetic Soul", artist: "Deep Learning", duration: "3:56" },
-  ];
+  // Filter out the current song from recommendations
+  const recommendedSongs = songs.filter((song) => song.title !== currentSong.title).slice(0, 5);
 
   // Real-time song rotation effect
   useEffect(() => {
@@ -67,15 +36,18 @@ const Index = () => {
         // Progress ranges from 0-100
         if (current[0] >= 100) {
           // When song completes, move to next song
-          const currentIndex = songPlaylist.findIndex(
-            song => song.title === currentSong.title
-          );
-          const nextIndex = (currentIndex + 1) % songPlaylist.length;
-          setCurrentSong(songPlaylist[nextIndex]);
+          const nextIndex = (currentSongIndex + 1) % songs.length;
+          setCurrentSongIndex(nextIndex);
+          setCurrentSong({
+            title: songs[nextIndex].title,
+            artist: songs[nextIndex].artist,
+            duration: songs[nextIndex].duration,
+            cover: songs[nextIndex].cover
+          });
           
           toast({
             title: "Now Playing",
-            description: `${songPlaylist[nextIndex].title} by ${songPlaylist[nextIndex].artist}`,
+            description: `${songs[nextIndex].title} by ${songs[nextIndex].artist}`,
             duration: 2000,
           });
           
@@ -86,7 +58,7 @@ const Index = () => {
     }, 1000); // Update every second
     
     return () => clearInterval(progressInterval);
-  }, [isPlaying, currentSong, toast, songPlaylist]);
+  }, [isPlaying, currentSongIndex, toast]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -95,6 +67,46 @@ const Index = () => {
       description: `${currentSong.title} by ${currentSong.artist}`,
       duration: 2000,
     });
+  };
+
+  const handleSkipForward = () => {
+    const nextIndex = (currentSongIndex + 1) % songs.length;
+    setCurrentSongIndex(nextIndex);
+    setCurrentSong({
+      title: songs[nextIndex].title,
+      artist: songs[nextIndex].artist,
+      duration: songs[nextIndex].duration,
+      cover: songs[nextIndex].cover
+    });
+    setProgress([0]);
+    
+    if (isPlaying) {
+      toast({
+        title: "Now Playing",
+        description: `${songs[nextIndex].title} by ${songs[nextIndex].artist}`,
+        duration: 2000,
+      });
+    }
+  };
+
+  const handleSkipBack = () => {
+    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    setCurrentSongIndex(prevIndex);
+    setCurrentSong({
+      title: songs[prevIndex].title,
+      artist: songs[prevIndex].artist,
+      duration: songs[prevIndex].duration,
+      cover: songs[prevIndex].cover
+    });
+    setProgress([0]);
+    
+    if (isPlaying) {
+      toast({
+        title: "Now Playing",
+        description: `${songs[prevIndex].title} by ${songs[prevIndex].artist}`,
+        duration: 2000,
+      });
+    }
   };
 
   const handleAiModeToggle = () => {
@@ -133,6 +145,8 @@ const Index = () => {
         isPlaying={isPlaying}
         currentSong={currentSong}
         handlePlayPause={handlePlayPause}
+        handleSkipForward={handleSkipForward}
+        handleSkipBack={handleSkipBack}
         progress={progress}
         setProgress={setProgress}
         volume={volume}
