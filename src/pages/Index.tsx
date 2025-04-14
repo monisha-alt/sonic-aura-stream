@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
@@ -21,6 +21,73 @@ const Index = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
   const { toast } = useToast();
 
+  // Mock playlist of songs for real-time rotation
+  const songPlaylist = [
+    {
+      title: "Cosmic Harmony",
+      artist: "Neural Waves",
+      duration: "3:45",
+      cover: "https://placehold.co/400x400/8B5CF6/FFFFFF?text=Cosmic+Harmony"
+    },
+    {
+      title: "Digital Dreams",
+      artist: "The Algorithms",
+      duration: "4:12",
+      cover: "https://placehold.co/400x400/6366F1/FFFFFF?text=Digital+Dreams"
+    },
+    {
+      title: "Neural Network",
+      artist: "Binary Beats",
+      duration: "3:28",
+      cover: "https://placehold.co/400x400/A855F7/FFFFFF?text=Neural+Network"
+    },
+    {
+      title: "Quantum Waves",
+      artist: "AI Collective",
+      duration: "5:01",
+      cover: "https://placehold.co/400x400/EC4899/FFFFFF?text=Quantum+Waves"
+    }
+  ];
+
+  // Mock recommended songs
+  const recommendedSongs = [
+    { id: 1, title: "Digital Dreams", artist: "The Algorithms", duration: "4:12" },
+    { id: 2, title: "Neural Network", artist: "Binary Beats", duration: "3:28" },
+    { id: 3, title: "Quantum Waves", artist: "AI Collective", duration: "5:01" },
+    { id: 4, title: "Synthetic Soul", artist: "Deep Learning", duration: "3:56" },
+  ];
+
+  // Real-time song rotation effect
+  useEffect(() => {
+    if (!isPlaying) return;
+    
+    // Update progress in real-time when playing
+    const progressInterval = setInterval(() => {
+      setProgress(current => {
+        // Progress ranges from 0-100
+        if (current[0] >= 100) {
+          // When song completes, move to next song
+          const currentIndex = songPlaylist.findIndex(
+            song => song.title === currentSong.title
+          );
+          const nextIndex = (currentIndex + 1) % songPlaylist.length;
+          setCurrentSong(songPlaylist[nextIndex]);
+          
+          toast({
+            title: "Now Playing",
+            description: `${songPlaylist[nextIndex].title} by ${songPlaylist[nextIndex].artist}`,
+            duration: 2000,
+          });
+          
+          return [0]; // Reset progress for new song
+        }
+        return [current[0] + 1];
+      });
+    }, 1000); // Update every second
+    
+    return () => clearInterval(progressInterval);
+  }, [isPlaying, currentSong, toast, songPlaylist]);
+
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
     toast({
@@ -40,14 +107,6 @@ const Index = () => {
       duration: 3000,
     });
   };
-
-  // Mock recommended songs
-  const recommendedSongs = [
-    { id: 1, title: "Digital Dreams", artist: "The Algorithms", duration: "4:12" },
-    { id: 2, title: "Neural Network", artist: "Binary Beats", duration: "3:28" },
-    { id: 3, title: "Quantum Waves", artist: "AI Collective", duration: "5:01" },
-    { id: 4, title: "Synthetic Soul", artist: "Deep Learning", duration: "3:56" },
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
