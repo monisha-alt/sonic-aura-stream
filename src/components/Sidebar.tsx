@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { List, Disc, User, Music } from "lucide-react";
+import { List, Disc, User, Music, MapPin } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -26,6 +26,10 @@ const Sidebar = ({ aiModeEnabled, handleAiModeToggle }: SidebarProps) => {
         <Link to="/artists" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded hover:bg-gray-800">
           <User className="h-5 w-5" />
           <span>Artists</span>
+        </Link>
+        <Link to="/contextual" className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded hover:bg-gray-800">
+          <MapPin className="h-5 w-5" />
+          <span>Contextual</span>
         </Link>
         <div className="flex items-center space-x-2 text-gray-300 hover:text-white p-2 rounded hover:bg-gray-800">
           <List className="h-5 w-5" />
