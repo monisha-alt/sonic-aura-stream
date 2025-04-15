@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,7 +8,7 @@ const Header = () => {
     <div className="flex items-center justify-between p-4 border-b border-gray-700">
       <div className="flex items-center space-x-2">
         <Music className="h-8 w-8 text-purple-500" />
-        <h1 className="text-xl font-bold">Sonic Aura</h1>
+        <h1 className="text-xl font-bold">AuraSync</h1>
       </div>
       <div className="flex-1 max-w-md mx-4">
         <div className="relative">
