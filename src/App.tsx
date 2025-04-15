@@ -5,6 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import AlbumsPage from "./pages/AlbumsPage";
+import ArtistsPage from "./pages/ArtistsPage";
+import AlbumDetailPage from "./pages/AlbumDetailPage";
+import ArtistDetailPage from "./pages/ArtistDetailPage";
+import LyricsPage from "./pages/LyricsPage";
 import NotFound from "./pages/NotFound";
 import Chatbot from "./components/Chatbot";
 
@@ -18,7 +23,11 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/albums" element={<AlbumsPage />} />
+          <Route path="/albums/:id" element={<AlbumDetailPage />} />
+          <Route path="/artists" element={<ArtistsPage />} />
+          <Route path="/artists/:id" element={<ArtistDetailPage />} />
+          <Route path="/lyrics/:songId" element={<LyricsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Chatbot />
