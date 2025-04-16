@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Play, Heart, Calendar, ChevronLeft } from "lucide-react";
 import { songs, lyrics } from "@/data";
 import PlayerControls from "@/components/PlayerControls";
+import SongComments from "@/components/SongComments";
 import { useToast } from "@/hooks/use-toast";
 
 const LyricsPage = () => {
@@ -26,6 +27,10 @@ const LyricsPage = () => {
   const [volume, setVolume] = useState([50]);
   const [progress, setProgress] = useState([0]);
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
+  const [currentPlaybackTime, setCurrentPlaybackTime] = useState("0:00");
+
+  // Timer ref for playback simulation
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     // Find the song
@@ -54,6 +59,64 @@ const LyricsPage = () => {
       });
     }
   }, [songId]);
+
+  // Simulate playback time updates
+  useEffect(() => {
+    if (isPlaying && song) {
+      // Clear any existing timer
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+
+      // Set up a timer to update the current time
+      timerRef.current = setInterval(() => {
+        setCurrentPlaybackTime((prevTime) => {
+          const [mins, secs] = prevTime.split(':').map(Number);
+          let totalSeconds = mins * 60 + secs + 1;
+          
+          // Convert song duration to seconds for comparison
+          const [durationMins, durationSecs] = song.duration.split(':').map(Number);
+          const totalDuration = durationMins * 60 + durationSecs;
+          
+          // Reset if reached the end
+          if (totalSeconds >= totalDuration) {
+            setIsPlaying(false);
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+              timerRef.current = null;
+            }
+            return "0:00";
+          }
+          
+          // Format back to MM:SS
+          const newMins = Math.floor(totalSeconds / 60);
+          const newSecs = totalSeconds % 60;
+          return `${newMins}:${newSecs.toString().padStart(2, '0')}`;
+        });
+        
+        // Update progress
+        if (song) {
+          const [durationMins, durationSecs] = song.duration.split(':').map(Number);
+          const totalDuration = durationMins * 60 + durationSecs;
+          
+          const [currentMins, currentSecs] = currentPlaybackTime.split(':').map(Number);
+          const currentTotal = currentMins * 60 + currentSecs;
+          
+          const progressPercentage = (currentTotal / totalDuration) * 100;
+          setProgress([progressPercentage]);
+        }
+      }, 1000);
+      
+      return () => {
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+        }
+      };
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  }, [isPlaying, song, currentPlaybackTime]);
 
   const handleAiModeToggle = () => {
     setAiModeEnabled(!aiModeEnabled);
@@ -84,6 +147,24 @@ const LyricsPage = () => {
       description: `Feature limited on lyrics page`,
       duration: 2000,
     });
+  };
+
+  const handleTimestampClick = (timestamp: string) => {
+    // Parse the timestamp
+    const [mins, secs] = timestamp.split(':').map(Number);
+    const totalSeconds = mins * 60 + (secs || 0);
+    
+    // Calculate progress based on total duration
+    if (song) {
+      const [durationMins, durationSecs] = song.duration.split(':').map(Number);
+      const totalDuration = durationMins * 60 + durationSecs;
+      
+      const progressPercentage = (totalSeconds / totalDuration) * 100;
+      setProgress([progressPercentage]);
+      
+      // Update current time
+      setCurrentPlaybackTime(timestamp);
+    }
   };
 
   if (!song) {
@@ -154,18 +235,28 @@ const LyricsPage = () => {
             </div>
           </div>
           
-          <div className="max-w-3xl">
-            <h2 className="text-xl font-semibold mb-4">Lyrics</h2>
-            <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg whitespace-pre-line leading-relaxed">
-              {songLyrics}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl">
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Lyrics</h2>
+              <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg whitespace-pre-line leading-relaxed">
+                {songLyrics}
+              </div>
+              
+              {contributors.length > 0 && (
+                <div className="mt-6">
+                  <h3 className="text-sm font-medium text-gray-400">Contributors</h3>
+                  <p className="text-sm text-gray-500">{contributors.join(", ")}</p>
+                </div>
+              )}
             </div>
             
-            {contributors.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-sm font-medium text-gray-400">Contributors</h3>
-                <p className="text-sm text-gray-500">{contributors.join(", ")}</p>
-              </div>
-            )}
+            <div>
+              <SongComments 
+                songId={songId || ""} 
+                currentTime={currentPlaybackTime}
+                onTimestampClick={handleTimestampClick}
+              />
+            </div>
           </div>
         </div>
       </div>

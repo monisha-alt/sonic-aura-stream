@@ -6,3 +6,4 @@ export * from './playlists';
 export * from './users';
 export * from './lyrics';
 export * from './contextual';
+export * from './comments';
