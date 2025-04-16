@@ -10,6 +10,7 @@ import ArtistsPage from "./pages/ArtistsPage";
 import AlbumDetailPage from "./pages/AlbumDetailPage";
 import ArtistDetailPage from "./pages/ArtistDetailPage";
 import LyricsPage from "./pages/LyricsPage";
+import RemixPage from "./pages/RemixPage";
 import ContextualPage from "./pages/ContextualPage";
 import NotFound from "./pages/NotFound";
 import Chatbot from "./components/Chatbot";
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/artists" element={<ArtistsPage />} />
           <Route path="/artists/:id" element={<ArtistDetailPage />} />
           <Route path="/lyrics/:songId" element={<LyricsPage />} />
+          <Route path="/remix/:songId" element={<RemixPage />} />
           <Route path="/contextual" element={<ContextualPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

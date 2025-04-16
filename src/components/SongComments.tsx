@@ -1,14 +1,14 @@
-
 import React, { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
-import { Clock, Heart, Send, MessageSquare } from "lucide-react";
+import { Clock, Heart, Send, MessageSquare, Music } from "lucide-react";
 import { comments as allComments, CommentType } from "@/data";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 interface SongCommentsProps {
   songId: string;
@@ -35,27 +35,23 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
   });
 
   const onSubmit = (data: CommentFormValues) => {
-    // Create a new comment
     const newComment: CommentType = {
       id: `c${Date.now()}`,
       songId: songId,
-      userId: "currentUser", // In a real app, this would be the logged-in user's ID
+      userId: "currentUser",
       timestamp: data.timestamp,
       text: data.text,
       createdAt: new Date(),
       likes: 0
     };
 
-    // Update the comments state
     setComments((prev) => [newComment, ...prev]);
     form.reset();
 
-    // Scroll to the top of the comments list
     if (commentListRef.current) {
       commentListRef.current.scrollTop = 0;
     }
 
-    // Show a success toast
     toast({
       title: "Comment added",
       description: "Your comment has been added successfully.",
@@ -90,7 +86,6 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
     }
   };
 
-  // Update the timestamp when currentTime changes
   React.useEffect(() => {
     form.setValue("timestamp", currentTime);
   }, [currentTime, form]);
@@ -102,9 +97,14 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
           <MessageSquare className="mr-2 h-5 w-5" /> 
           Comments ({comments.length})
         </h3>
+        <Link to={`/remix/${songId}`}>
+          <Button variant="outline" className="flex items-center">
+            <Music className="mr-2 h-4 w-4" />
+            Remix this song
+          </Button>
+        </Link>
       </div>
 
-      {/* Comment Form */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
@@ -154,7 +154,6 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
         </form>
       </Form>
 
-      {/* Comments List */}
       <div 
         className="space-y-4 max-h-96 overflow-y-auto pr-2 pb-2" 
         ref={commentListRef}
