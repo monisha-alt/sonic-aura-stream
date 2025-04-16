@@ -15,8 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { 
-  Waveform, 
-  MusicNotes, 
+  WaveformIcon, 
+  Music, 
   FastForward, 
   Volume2, 
   Waves, 
@@ -146,7 +146,7 @@ const SongRemixer = ({ songId }: SongRemixerProps) => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold flex items-center">
-          <MusicNotes className="mr-2 h-6 w-6 text-purple-500" /> 
+          <Music className="mr-2 h-6 w-6 text-purple-500" /> 
           Remix Studio
         </h2>
         <Button
@@ -154,7 +154,7 @@ const SongRemixer = ({ songId }: SongRemixerProps) => {
           variant={previewMode ? "secondary" : "outline"}
           className={previewMode ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
         >
-          <Waveform className="mr-2 h-4 w-4" />
+          <WaveformIcon className="mr-2 h-4 w-4" />
           {previewMode ? "Exit Preview" : "Preview Remix"}
         </Button>
       </div>
