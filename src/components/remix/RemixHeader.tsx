@@ -6,9 +6,10 @@ import { Music, Waves } from "lucide-react";
 interface RemixHeaderProps {
   previewMode: boolean;
   handlePreview: () => void;
+  songId?: string;
 }
 
-const RemixHeader = ({ previewMode, handlePreview }: RemixHeaderProps) => {
+const RemixHeader = ({ previewMode, handlePreview, songId }: RemixHeaderProps) => {
   return (
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-bold flex items-center">

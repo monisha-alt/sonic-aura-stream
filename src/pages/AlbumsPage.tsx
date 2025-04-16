@@ -1,13 +1,11 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
-import { Card, CardContent } from "@/components/ui/card";
-import { albums } from "@/data";
-import PlayerControls from "@/components/PlayerControls";
 import { useState } from "react";
 import { songs } from "@/data";
+import PlayerControls from "@/components/PlayerControls";
+import AlbumGrid from "@/components/AlbumGrid";
 
 const AlbumsPage = () => {
   // Simplified player state (duplicated from Index page for standalone functionality)
@@ -67,25 +65,7 @@ const AlbumsPage = () => {
 
         <div className="flex-1 p-4 pb-24">
           <h2 className="text-2xl font-bold mb-6">Albums</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {albums.map((album) => (
-              <Link to={`/albums/${album.id}`} key={album.id}>
-                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors">
-                  <CardContent className="p-4">
-                    <img 
-                      src={album.cover} 
-                      alt={`${album.title} album cover`}
-                      className="w-full aspect-square object-cover rounded-md mb-3"
-                    />
-                    <h3 className="font-semibold text-white truncate">{album.title}</h3>
-                    <p className="text-sm text-gray-400">{album.artist}</p>
-                    <p className="text-xs text-gray-500 mt-1">{album.releaseYear}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          <AlbumGrid showYear={true} />
         </div>
       </div>
 

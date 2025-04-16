@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -8,6 +7,7 @@ import { Play, Calendar, Music, AlbumIcon } from "lucide-react";
 import { albums, songs, AlbumType } from "@/data";
 import PlayerControls from "@/components/PlayerControls";
 import { useToast } from "@/hooks/use-toast";
+import ShareAlbum from "@/components/ShareAlbum";
 
 const AlbumDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,18 +28,15 @@ const AlbumDetailPage = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
 
   useEffect(() => {
-    // Find the album
     const foundAlbum = albums.find(a => a.id === id);
     setAlbum(foundAlbum || null);
     
-    // Find songs from this album
     if (foundAlbum) {
       const albumSongs = songs.filter(song => 
         song.album === foundAlbum.title
       );
       setAlbumSongs(albumSongs);
       
-      // Set current song to first song from album
       if (albumSongs.length > 0) {
         setCurrentSong({
           title: albumSongs[0].title,
@@ -164,7 +161,7 @@ const AlbumDetailPage = () => {
                   <AlbumIcon className="mr-1 h-4 w-4" /> {album.genre.join(", ")}
                 </span>
               </div>
-              <div className="pt-2">
+              <div className="pt-2 flex space-x-2">
                 <Button 
                   onClick={() => {
                     setIsPlaying(true);
@@ -179,6 +176,7 @@ const AlbumDetailPage = () => {
                   <Play className="mr-2 h-4 w-4" />
                   Play Album
                 </Button>
+                <ShareAlbum albumId={album.id} />
               </div>
             </div>
           </div>
