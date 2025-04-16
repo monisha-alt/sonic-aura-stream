@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -15,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { 
-  WaveformIcon, 
   Music, 
   FastForward, 
   Volume2, 
@@ -154,7 +152,7 @@ const SongRemixer = ({ songId }: SongRemixerProps) => {
           variant={previewMode ? "secondary" : "outline"}
           className={previewMode ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
         >
-          <WaveformIcon className="mr-2 h-4 w-4" />
+          <Waves className="mr-2 h-4 w-4" />
           {previewMode ? "Exit Preview" : "Preview Remix"}
         </Button>
       </div>
