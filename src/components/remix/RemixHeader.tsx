@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Music, Waves } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface RemixHeaderProps {
   previewMode: boolean;
@@ -16,14 +17,17 @@ const RemixHeader = ({ previewMode, handlePreview, songId }: RemixHeaderProps) =
         <Music className="mr-2 h-6 w-6 text-purple-500" /> 
         Remix Studio
       </h2>
-      <Button
-        onClick={handlePreview}
-        variant={previewMode ? "secondary" : "outline"}
-        className={previewMode ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
-      >
-        <Waves className="mr-2 h-4 w-4" />
-        {previewMode ? "Exit Preview" : "Preview Remix"}
-      </Button>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Button
+          onClick={handlePreview}
+          variant={previewMode ? "secondary" : "outline"}
+          className={previewMode ? "bg-purple-600 hover:bg-purple-700 text-white dark:bg-purple-800 dark:hover:bg-purple-700 dark:text-white" : ""}
+        >
+          <Waves className="mr-2 h-4 w-4" />
+          {previewMode ? "Exit Preview" : "Preview Remix"}
+        </Button>
+      </div>
     </div>
   );
 };
