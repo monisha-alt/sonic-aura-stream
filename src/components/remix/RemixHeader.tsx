@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Music, Waves } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { songs } from "@/data";
 
 interface RemixHeaderProps {
   previewMode: boolean;
@@ -11,11 +12,18 @@ interface RemixHeaderProps {
 }
 
 const RemixHeader = ({ previewMode, handlePreview, songId }: RemixHeaderProps) => {
+  const currentSong = songId ? songs.find(s => s.id === songId) : null;
+  
   return (
     <div className="flex items-center justify-between">
       <h2 className="text-2xl font-bold flex items-center">
         <Music className="mr-2 h-6 w-6 text-purple-500" /> 
         Remix Studio
+        {currentSong && (
+          <span className="ml-2 text-lg font-normal text-gray-400">
+            | {currentSong.title} by {currentSong.artist}
+          </span>
+        )}
       </h2>
       <div className="flex items-center gap-2">
         <ThemeToggle />

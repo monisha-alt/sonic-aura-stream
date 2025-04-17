@@ -1,10 +1,13 @@
-
 export const effectTypeLabels = {
   bass_boost: "Bass Boost",
   tempo: "Tempo Change",
   echo: "Echo",
   reverb: "Reverb",
-  filter: "Filter"
+  filter: "Filter",
+  distortion: "Distortion",
+  lowpass: "Low Pass Filter",
+  highpass: "High Pass Filter",
+  bitcrush: "Bit Crusher"
 };
 
 export const shareOptions = [
@@ -34,4 +37,26 @@ export const shareAlbum = (albumId: string, platform: string) => {
     default:
       return null;
   }
+};
+
+export const applyPreset = (preset: string) => {
+  const presets = {
+    concert: [
+      { type: "reverb" as const, value: 65 },
+      { type: "bass_boost" as const, value: 50 },
+      { type: "distortion" as const, value: 20 }
+    ],
+    lofi: [
+      { type: "lowpass" as const, value: 60 },
+      { type: "bitcrush" as const, value: 25 },
+      { type: "echo" as const, value: 30 }
+    ],
+    club: [
+      { type: "bass_boost" as const, value: 80 },
+      { type: "tempo" as const, value: 110 },
+      { type: "echo" as const, value: 20 }
+    ]
+  };
+
+  return presets[preset as keyof typeof presets] || [];
 };
