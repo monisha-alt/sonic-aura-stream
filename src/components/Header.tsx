@@ -1,14 +1,18 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Music, Search, Heart, Settings, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-700">
+    <div className="flex items-center justify-between p-4 border-b border-gray-700 dark:border-gray-800">
       <div className="flex items-center space-x-2">
-        <Music className="h-8 w-8 text-purple-500" />
-        <h1 className="text-xl font-bold">AuraSync</h1>
+        <Link to="/" className="flex items-center space-x-2">
+          <Music className="h-8 w-8 text-purple-500" />
+          <h1 className="text-xl font-bold">AuraSync</h1>
+        </Link>
       </div>
       <div className="flex-1 max-w-md mx-4">
         <div className="relative">
@@ -20,14 +24,20 @@ const Header = () => {
         </div>
       </div>
       <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="icon">
-          <Heart className="h-5 w-5" />
+        <Button variant="ghost" size="icon" asChild>
+          <Link to="/favorites">
+            <Heart className="h-5 w-5" />
+          </Link>
         </Button>
-        <Button variant="ghost" size="icon">
-          <Settings className="h-5 w-5" />
+        <Button variant="ghost" size="icon" asChild>
+          <Link to="/settings">
+            <Settings className="h-5 w-5" />
+          </Link>
         </Button>
-        <Button variant="ghost" size="icon">
-          <User className="h-5 w-5" />
+        <Button variant="ghost" size="icon" asChild>
+          <Link to="/profile">
+            <User className="h-5 w-5" />
+          </Link>
         </Button>
       </div>
     </div>
