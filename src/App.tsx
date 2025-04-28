@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,7 @@ import ArtistDetailPage from "./pages/ArtistDetailPage";
 import LyricsPage from "./pages/LyricsPage";
 import RemixPage from "./pages/RemixPage";
 import ContextualPage from "./pages/ContextualPage";
+import LiveSessionsPage from "./pages/LiveSessionsPage";
 import NotFound from "./pages/NotFound";
 import Chatbot from "./components/Chatbot";
 
@@ -54,6 +56,7 @@ const App = () => (
           <Route path="/lyrics/:songId" element={<LyricsPage />} />
           <Route path="/remix/:songId" element={<RemixPage />} />
           <Route path="/contextual" element={<ContextualPage />} />
+          <Route path="/live" element={<LiveSessionsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Chatbot />

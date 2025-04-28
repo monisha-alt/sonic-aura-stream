@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Heart, Music } from "lucide-react";
+import { Heart, Music, Users } from "lucide-react";
 
 interface CurrentSongDisplayProps {
   currentSong: {

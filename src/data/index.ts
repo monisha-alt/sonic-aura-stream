@@ -8,3 +8,4 @@ export * from './lyrics';
 export * from './contextual';
 export * from './comments';
 export * from './remixes';
+export * from './liveSessions';
