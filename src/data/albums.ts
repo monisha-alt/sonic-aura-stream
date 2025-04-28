@@ -7,6 +7,8 @@ export interface AlbumType {
   releaseYear: number;
   tracks: string[];
   genre: string[];
+  language: string;
+  mood: string[];
 }
 
 export const albums: AlbumType[] = [
@@ -17,42 +19,52 @@ export const albums: AlbumType[] = [
     cover: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop",
     releaseYear: 2020,
     tracks: ["s1"],
-    genre: ["Synth-pop", "New Wave", "Dance"]
+    genre: ["Synth-pop", "New Wave", "Dance"],
+    language: "English",
+    mood: ["Dark", "Energetic"]
   },
   {
     id: "al2",
-    title: "When We All Fall Asleep, Where Do We Go?",
-    artist: "Billie Eilish",
-    cover: "https://images.unsplash.com/photo-1598387993241-dada59c16da1?q=80&w=400&h=400&auto=format&fit=crop",
-    releaseYear: 2019,
+    title: "Vida",
+    artist: "Luis Fonsi",
+    cover: "https://images.unsplash.com/photo-1598387993441-a364f854c3e1?q=80&w=400&h=400&auto=format&fit=crop",
+    releaseYear: 2017,
     tracks: ["s2"],
-    genre: ["Electropop", "Trap", "Pop"]
+    genre: ["Latin Pop", "Reggaeton"],
+    language: "Spanish",
+    mood: ["Upbeat", "Summer"]
   },
   {
     id: "al3",
-    title: "Future Nostalgia",
-    artist: "Dua Lipa",
-    cover: "https://images.unsplash.com/photo-1616356607338-fd83b7e86a1b?q=80&w=400&h=400&auto=format&fit=crop",
+    title: "BE",
+    artist: "BTS",
+    cover: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=400&h=400&auto=format&fit=crop",
     releaseYear: 2020,
-    tracks: ["s3", "s4"],
-    genre: ["Disco", "Dance-pop", "Nu-disco"]
+    tracks: ["s3"],
+    genre: ["K-pop", "Disco-pop"],
+    language: "Korean",
+    mood: ["Happy", "Energetic"]
   },
   {
     id: "al4",
-    title: "Fine Line",
-    artist: "Harry Styles",
-    cover: "https://images.unsplash.com/photo-1619983081563-430f63602796?q=80&w=400&h=400&auto=format&fit=crop",
-    releaseYear: 2019,
-    tracks: ["s5"],
-    genre: ["Pop Rock", "Funk", "Indie"]
+    title: "Paris",
+    artist: "Zaz",
+    cover: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=400&h=400&auto=format&fit=crop",
+    releaseYear: 2014,
+    tracks: ["s4"],
+    genre: ["French Pop", "Jazz"],
+    language: "French",
+    mood: ["Romantic", "Relaxed"]
   },
   {
     id: "al5",
-    title: "Hollywood's Bleeding",
-    artist: "Post Malone",
-    cover: "https://images.unsplash.com/photo-1618609377864-68609b857e90?q=80&w=400&h=400&auto=format&fit=crop",
-    releaseYear: 2019,
-    tracks: ["s6"],
-    genre: ["Pop", "Alternative", "Hip-Hop"]
+    title: "Italian Classics",
+    artist: "Il Professore",
+    cover: "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?q=80&w=400&h=400&auto=format&fit=crop",
+    releaseYear: 2018,
+    tracks: ["s5"],
+    genre: ["Folk", "Traditional"],
+    language: "Italian",
+    mood: ["Traditional", "Energetic"]
   }
 ];
