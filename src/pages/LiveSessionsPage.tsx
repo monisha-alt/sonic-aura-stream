@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import PlayerControls from "@/components/PlayerControls";
 import LiveSessionCard from "@/components/LiveSessionCard";
+import SessionComments from "@/components/SessionComments";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
@@ -27,6 +28,7 @@ const LiveSessionsPage = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
   const [sessionName, setSessionName] = useState("");
   const [isPublic, setIsPublic] = useState(true);
+  const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const { toast } = useToast();
   
   const publicSessions = liveSessions.filter(session => session.isPublic);
@@ -60,6 +62,7 @@ const LiveSessionsPage = () => {
           cover: song.cover
         });
         setIsPlaying(true);
+        setActiveSessionId(sessionId);
         toast({
           title: "Joined Live Session",
           description: `You are now listening to "${session.name}"`,
@@ -149,6 +152,26 @@ const LiveSessionsPage = () => {
               </DialogContent>
             </Dialog>
           </div>
+          
+          {activeSessionId && (
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold mb-4">Active Session</h3>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2">
+                  {liveSessions.filter(session => session.id === activeSessionId).map(session => (
+                    <LiveSessionCard 
+                      key={session.id} 
+                      session={session} 
+                      onJoin={handleJoinSession}
+                    />
+                  ))}
+                </div>
+                <div className="lg:col-span-1">
+                  <SessionComments sessionId={activeSessionId} />
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Featured Sessions */}
           <div className="mb-8">
