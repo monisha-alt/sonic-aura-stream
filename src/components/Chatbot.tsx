@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { Bot, Send, X } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Bot, Send, X, Mic, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -28,7 +28,18 @@ const Chatbot = () => {
       isBot: true,
     },
   ]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isRecognitionSupported, setIsRecognitionSupported] = useState(false);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const { toast } = useToast();
+
+  // Check if SpeechRecognition is supported
+  useEffect(() => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      setIsRecognitionSupported(true);
+    }
+  }, []);
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -84,6 +95,64 @@ const Chatbot = () => {
     });
   };
 
+  const toggleSpeechRecognition = () => {
+    if (isRecording) {
+      stopSpeechRecognition();
+    } else {
+      startSpeechRecognition();
+    }
+  };
+
+  const startSpeechRecognition = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      const recognition = recognitionRef.current;
+      
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        setIsRecording(true);
+        toast({
+          title: "Voice input active",
+          description: "Listening... speak now",
+          duration: 2000,
+        });
+      };
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setInput(transcript);
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+        toast({
+          title: "Error",
+          description: `Voice recognition failed: ${event.error}`,
+          duration: 2000,
+        });
+        setIsRecording(false);
+      };
+      
+      recognition.onend = () => {
+        setIsRecording(false);
+      };
+      
+      recognition.start();
+    }
+  };
+
+  const stopSpeechRecognition = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
@@ -137,6 +206,16 @@ const Chatbot = () => {
             placeholder="Ask about music recommendations..."
             className="flex-1"
           />
+          {isRecognitionSupported && (
+            <Button 
+              onClick={toggleSpeechRecognition} 
+              variant={isRecording ? "destructive" : "outline"}
+              className="px-3"
+              type="button"
+            >
+              {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </Button>
+          )}
           <Button onClick={handleSendMessage}>
             <Send className="h-4 w-4" />
           </Button>
