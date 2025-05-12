@@ -11,12 +11,15 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { songs } from "@/data";
 
 type Message = {
   id: string;
   content: string;
   isBot: boolean;
 };
+
+type EmotionType = "Happy" | "Sad" | "Energetic" | "Relaxed" | "Focused" | null;
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,6 +34,7 @@ const Chatbot = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isRecognitionSupported, setIsRecognitionSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [detectedEmotion, setDetectedEmotion] = useState<EmotionType>(null);
   const { toast } = useToast();
 
   // Check if SpeechRecognition is supported
@@ -40,6 +44,55 @@ const Chatbot = () => {
       setIsRecognitionSupported(true);
     }
   }, []);
+
+  const detectEmotion = (transcript: string): EmotionType => {
+    // Simple emotion detection based on keywords
+    const transcript_lower = transcript.toLowerCase();
+    
+    const happyKeywords = ['happy', 'joy', 'excited', 'great', 'wonderful', 'awesome', 'love'];
+    const sadKeywords = ['sad', 'depressed', 'unhappy', 'down', 'blue', 'terrible', 'miss'];
+    const energeticKeywords = ['energetic', 'pumped', 'workout', 'run', 'active', 'party', 'dance'];
+    const relaxedKeywords = ['relax', 'calm', 'peaceful', 'sleep', 'rest', 'chill', 'unwind'];
+    const focusedKeywords = ['focus', 'concentrate', 'study', 'work', 'productivity', 'attention'];
+    
+    // Check for matches
+    if (happyKeywords.some(keyword => transcript_lower.includes(keyword))) return "Happy";
+    if (sadKeywords.some(keyword => transcript_lower.includes(keyword))) return "Sad";
+    if (energeticKeywords.some(keyword => transcript_lower.includes(keyword))) return "Energetic";
+    if (relaxedKeywords.some(keyword => transcript_lower.includes(keyword))) return "Relaxed";
+    if (focusedKeywords.some(keyword => transcript_lower.includes(keyword))) return "Focused";
+    
+    // Analyze speech pattern (simplified simulation)
+    // In a real implementation, you'd use a proper sentiment analysis API
+    const words = transcript_lower.split(' ');
+    if (words.length > 0) {
+      // Simple heuristic - longer sentences with exclamations might indicate excitement
+      if (words.length > 10 && transcript.includes('!')) return "Energetic";
+      // Shorter responses might indicate focus or relaxation
+      if (words.length < 5) return "Focused";
+    }
+    
+    return null; // No clear emotion detected
+  };
+
+  const getSongRecommendations = (emotion: EmotionType) => {
+    if (!emotion) return [];
+    
+    // Filter songs based on matching mood
+    const matchingSongs = songs.filter(song => 
+      song.mood && song.mood.some(m => 
+        m.toLowerCase() === emotion.toLowerCase() ||
+        (emotion === "Happy" && (m === "Upbeat" || m === "Summer")) ||
+        (emotion === "Sad" && (m === "Melancholic" || m === "Dark")) ||
+        (emotion === "Energetic" && (m === "Dance" || m === "Upbeat")) ||
+        (emotion === "Relaxed" && (m === "Romantic" || m === "Smooth")) ||
+        (emotion === "Focused" && (m === "Revolutionary" || m === "Quirky"))
+      )
+    );
+    
+    // Return up to 3 song recommendations
+    return matchingSongs.slice(0, 3);
+  };
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -52,21 +105,37 @@ const Chatbot = () => {
     };
     
     setMessages((prev) => [...prev, userMessage]);
+    
+    // Detect emotion from user input
+    const emotion = detectEmotion(input);
+    setDetectedEmotion(emotion);
     setInput("");
     
-    // Simulate bot response
+    // Generate recommendations based on detected emotion
+    const recommendations = getSongRecommendations(emotion);
+    
+    // Prepare bot response
     setTimeout(() => {
-      const botResponses = [
-        "I can recommend some songs based on your mood. How are you feeling today?",
-        "Have you tried our new AI mood-based playlist generator?",
-        "I think you might enjoy 'Cosmic Harmony' by Neural Waves based on your recent listening.",
-        "Would you like me to create a personalized playlist for your workout?",
-        "I noticed you enjoy electronic music. Have you explored our 'Digital Dreams' collection?",
-      ];
+      let botResponseContent = "";
+      
+      if (emotion) {
+        botResponseContent = `I sense that you're feeling ${emotion.toLowerCase()}. `;
+        
+        if (recommendations.length > 0) {
+          botResponseContent += `Here are some songs that match your mood:\n\n`;
+          recommendations.forEach((song, index) => {
+            botResponseContent += `${index + 1}. "${song.title}" by ${song.artist}\n`;
+          });
+        } else {
+          botResponseContent += `I don't have specific song recommendations for this mood right now, but I'm learning more every day!`;
+        }
+      } else {
+        botResponseContent = `I'm not sure what mood you're in. Could you share more about how you're feeling?`;
+      }
       
       const botMessage = {
         id: `bot-${Date.now()}`,
-        content: botResponses[Math.floor(Math.random() * botResponses.length)],
+        content: botResponseContent,
         isBot: true,
       };
       
@@ -88,6 +157,7 @@ const Chatbot = () => {
         isBot: true,
       },
     ]);
+    setDetectedEmotion(null);
     toast({
       title: "Chat cleared",
       description: "Your conversation has been reset.",
@@ -126,6 +196,24 @@ const Chatbot = () => {
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
+        
+        // Auto-detect emotion when speech ends
+        const emotion = detectEmotion(transcript);
+        setDetectedEmotion(emotion);
+        
+        // Display emotion feedback
+        if (emotion) {
+          toast({
+            title: "Emotion Detected",
+            description: `You sound ${emotion.toLowerCase()}. Finding matching songs...`,
+            duration: 3000,
+          });
+        }
+        
+        // Auto-send after a brief delay to allow user to see the transcription
+        setTimeout(() => {
+          handleSendMessage();
+        }, 500);
       };
       
       recognition.onerror = (event) => {
@@ -169,7 +257,7 @@ const Chatbot = () => {
           <div className="flex justify-between items-center">
             <SheetTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-purple-500" />
-              Music Assistant
+              Music Assistant {detectedEmotion && <span className="text-sm text-purple-400">({detectedEmotion})</span>}
             </SheetTitle>
             <Button variant="ghost" size="sm" onClick={clearChat} className="h-8 px-2">
               <X className="h-4 w-4 mr-1" /> Clear
@@ -192,7 +280,9 @@ const Chatbot = () => {
                     : "bg-purple-600 text-white"
                 }`}
               >
-                {msg.content}
+                {msg.content.split('\n').map((line, i) => (
+                  <div key={i}>{line}</div>
+                ))}
               </div>
             </div>
           ))}
@@ -212,6 +302,7 @@ const Chatbot = () => {
               variant={isRecording ? "destructive" : "outline"}
               className="px-3"
               type="button"
+              title={isRecording ? "Stop voice input" : "Start voice input"}
             >
               {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
             </Button>
