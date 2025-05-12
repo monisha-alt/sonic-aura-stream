@@ -16,6 +16,7 @@ import ContextualPage from "./pages/ContextualPage";
 import LiveSessionsPage from "./pages/LiveSessionsPage";
 import NotFound from "./pages/NotFound";
 import Chatbot from "./components/Chatbot";
+import EnhancedHeader from "./components/EnhancedHeader";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <EnhancedHeader />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/albums" element={<AlbumsPage />} />

@@ -12,14 +12,13 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { songs } from "@/data";
+import { useEmotionDetection, EmotionType } from "@/hooks/useEmotionDetection";
 
 type Message = {
   id: string;
   content: string;
   isBot: boolean;
 };
-
-type EmotionType = "Happy" | "Sad" | "Energetic" | "Relaxed" | "Focused" | null;
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,8 +33,14 @@ const Chatbot = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [isRecognitionSupported, setIsRecognitionSupported] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const [detectedEmotion, setDetectedEmotion] = useState<EmotionType>(null);
   const { toast } = useToast();
+  
+  const {
+    detectedEmotion,
+    setDetectedEmotion,
+    detectEmotionFromText,
+    getSongRecommendationsForEmotion
+  } = useEmotionDetection();
 
   // Check if SpeechRecognition is supported
   useEffect(() => {
@@ -44,55 +49,6 @@ const Chatbot = () => {
       setIsRecognitionSupported(true);
     }
   }, []);
-
-  const detectEmotion = (transcript: string): EmotionType => {
-    // Simple emotion detection based on keywords
-    const transcript_lower = transcript.toLowerCase();
-    
-    const happyKeywords = ['happy', 'joy', 'excited', 'great', 'wonderful', 'awesome', 'love'];
-    const sadKeywords = ['sad', 'depressed', 'unhappy', 'down', 'blue', 'terrible', 'miss'];
-    const energeticKeywords = ['energetic', 'pumped', 'workout', 'run', 'active', 'party', 'dance'];
-    const relaxedKeywords = ['relax', 'calm', 'peaceful', 'sleep', 'rest', 'chill', 'unwind'];
-    const focusedKeywords = ['focus', 'concentrate', 'study', 'work', 'productivity', 'attention'];
-    
-    // Check for matches
-    if (happyKeywords.some(keyword => transcript_lower.includes(keyword))) return "Happy";
-    if (sadKeywords.some(keyword => transcript_lower.includes(keyword))) return "Sad";
-    if (energeticKeywords.some(keyword => transcript_lower.includes(keyword))) return "Energetic";
-    if (relaxedKeywords.some(keyword => transcript_lower.includes(keyword))) return "Relaxed";
-    if (focusedKeywords.some(keyword => transcript_lower.includes(keyword))) return "Focused";
-    
-    // Analyze speech pattern (simplified simulation)
-    // In a real implementation, you'd use a proper sentiment analysis API
-    const words = transcript_lower.split(' ');
-    if (words.length > 0) {
-      // Simple heuristic - longer sentences with exclamations might indicate excitement
-      if (words.length > 10 && transcript.includes('!')) return "Energetic";
-      // Shorter responses might indicate focus or relaxation
-      if (words.length < 5) return "Focused";
-    }
-    
-    return null; // No clear emotion detected
-  };
-
-  const getSongRecommendations = (emotion: EmotionType) => {
-    if (!emotion) return [];
-    
-    // Filter songs based on matching mood
-    const matchingSongs = songs.filter(song => 
-      song.mood && song.mood.some(m => 
-        m.toLowerCase() === emotion.toLowerCase() ||
-        (emotion === "Happy" && (m === "Upbeat" || m === "Summer")) ||
-        (emotion === "Sad" && (m === "Melancholic" || m === "Dark")) ||
-        (emotion === "Energetic" && (m === "Dance" || m === "Upbeat")) ||
-        (emotion === "Relaxed" && (m === "Romantic" || m === "Smooth")) ||
-        (emotion === "Focused" && (m === "Revolutionary" || m === "Quirky"))
-      )
-    );
-    
-    // Return up to 3 song recommendations
-    return matchingSongs.slice(0, 3);
-  };
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -107,12 +63,12 @@ const Chatbot = () => {
     setMessages((prev) => [...prev, userMessage]);
     
     // Detect emotion from user input
-    const emotion = detectEmotion(input);
+    const emotion = detectEmotionFromText(input);
     setDetectedEmotion(emotion);
     setInput("");
     
     // Generate recommendations based on detected emotion
-    const recommendations = getSongRecommendations(emotion);
+    const recommendations = getSongRecommendationsForEmotion(emotion);
     
     // Prepare bot response
     setTimeout(() => {
@@ -198,7 +154,7 @@ const Chatbot = () => {
         setInput(transcript);
         
         // Auto-detect emotion when speech ends
-        const emotion = detectEmotion(transcript);
+        const emotion = detectEmotionFromText(transcript);
         setDetectedEmotion(emotion);
         
         // Display emotion feedback
