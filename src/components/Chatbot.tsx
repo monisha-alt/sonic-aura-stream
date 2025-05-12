@@ -32,7 +32,7 @@ const Chatbot = () => {
   ]);
   const [isRecording, setIsRecording] = useState(false);
   const [isRecognitionSupported, setIsRecognitionSupported] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const recognitionRef = useRef<any>(null); // Changed to 'any' to avoid type errors
   const { toast } = useToast();
   
   const {
@@ -44,6 +44,7 @@ const Chatbot = () => {
 
   // Check if SpeechRecognition is supported
   useEffect(() => {
+    // Use window interface to check for browser support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       setIsRecognitionSupported(true);
@@ -149,7 +150,7 @@ const Chatbot = () => {
         });
       };
       
-      recognition.onresult = (event) => {
+      recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript;
         setInput(transcript);
         
@@ -172,7 +173,7 @@ const Chatbot = () => {
         }, 500);
       };
       
-      recognition.onerror = (event) => {
+      recognition.onerror = (event: any) => {
         console.error('Speech recognition error', event.error);
         toast({
           title: "Error",
