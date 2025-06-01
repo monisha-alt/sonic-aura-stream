@@ -16,13 +16,12 @@ const Index = () => {
   const [volume, setVolume] = useState([50]);
   const [progress, setProgress] = useState([0]);
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
+  const [currentSong, setCurrentSong] = useState<any>(null);
   const { toast } = useToast();
 
-  // Fetch songs from Supabase
+  // Fetch songs from Supabase - hooks must be called before any early returns
   const { data: songs = [], isLoading: songsLoading, error: songsError } = useSongs();
   const { data: playlists = [], isLoading: playlistsLoading } = usePlaylists();
-
-  const [currentSong, setCurrentSong] = useState<any>(null);
 
   // Set initial song when data loads
   useEffect(() => {
@@ -36,33 +35,6 @@ const Index = () => {
       });
     }
   }, [songs, currentSong]);
-
-  // Show loading state
-  if (songsLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-lg">Loading your music...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Show error state
-  if (songsError) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg text-red-400 mb-4">Error loading songs</p>
-          <p className="text-sm text-gray-400">Please try refreshing the page</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Filter out the current song from recommendations
-  const recommendedSongs = songs.filter((song) => song.title !== currentSong?.title).slice(0, 5);
 
   // Real-time song rotation effect
   useEffect(() => {
@@ -167,7 +139,32 @@ const Index = () => {
     });
   };
 
-  if (!currentSong) {
+  // Show loading state - moved after all hooks
+  if (songsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
+          <p className="text-lg">Loading your music...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state - moved after all hooks
+  if (songsError) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-red-400 mb-4">Error loading songs</p>
+          <p className="text-sm text-gray-400">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no songs state - moved after all hooks
+  if (!currentSong && songs.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
         <div className="text-center">
@@ -176,6 +173,9 @@ const Index = () => {
       </div>
     );
   }
+
+  // Filter out the current song from recommendations
+  const recommendedSongs = songs.filter((song) => song.title !== currentSong?.title).slice(0, 5);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
@@ -190,7 +190,7 @@ const Index = () => {
         <div className="flex-1 p-4">
           <h2 className="text-2xl font-bold mb-6">Your AI-Powered Recommendations</h2>
           
-          <CurrentSongDisplay currentSong={currentSong} />
+          {currentSong && <CurrentSongDisplay currentSong={currentSong} />}
           
           <RecommendedSongs songs={recommendedSongs.map(song => ({
             id: song.id,
@@ -210,17 +210,19 @@ const Index = () => {
         </div>
       </div>
 
-      <PlayerControls 
-        isPlaying={isPlaying}
-        currentSong={currentSong}
-        handlePlayPause={handlePlayPause}
-        handleSkipForward={handleSkipForward}
-        handleSkipBack={handleSkipBack}
-        progress={progress}
-        setProgress={setProgress}
-        volume={volume}
-        setVolume={setVolume}
-      />
+      {currentSong && (
+        <PlayerControls 
+          isPlaying={isPlaying}
+          currentSong={currentSong}
+          handlePlayPause={handlePlayPause}
+          handleSkipForward={handleSkipForward}
+          handleSkipBack={handleSkipBack}
+          progress={progress}
+          setProgress={setProgress}
+          volume={volume}
+          setVolume={setVolume}
+        />
+      )}
     </div>
   );
 };
