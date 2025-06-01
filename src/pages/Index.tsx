@@ -163,17 +163,6 @@ const Index = () => {
     );
   }
 
-  // Show no songs state - moved after all hooks
-  if (!currentSong && songs.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-lg">No songs available</p>
-        </div>
-      </div>
-    );
-  }
-
   // Filter out the current song from recommendations
   const recommendedSongs = songs.filter((song) => song.title !== currentSong?.title).slice(0, 5);
 
