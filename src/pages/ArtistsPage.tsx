@@ -1,102 +1,93 @@
 
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import { artists } from "@/data";
-import PlayerControls from "@/components/PlayerControls";
+import { useSongs } from "@/hooks/useSongs";
 import { Card, CardContent } from "@/components/ui/card";
-import { songs } from "@/data";
+import { Link } from "react-router-dom";
 
 const ArtistsPage = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [currentSong, setCurrentSong] = useState({
-    title: songs[0].title,
-    artist: songs[0].artist,
-    duration: songs[0].duration,
-    cover: songs[0].cover
+  const { data: songs = [], isLoading, error } = useSongs();
+
+  // Group songs by artist
+  const artistsMap = new Map();
+  songs.forEach(song => {
+    if (!artistsMap.has(song.artist)) {
+      artistsMap.set(song.artist, {
+        id: song.id,
+        name: song.artist,
+        image: song.cover_url || 'https://images.unsplash.com/photo-1621153359446-75218a80796a?q=80&w=400&h=400&auto=format&fit=crop',
+        bio: `${song.artist} is a talented artist known for their unique style and musical innovation.`,
+        genres: song.genre || [],
+        popularSongs: [song.id],
+        albums: [song.album],
+        languages: [song.language],
+        country: 'Unknown'
+      });
+    } else {
+      const artist = artistsMap.get(song.artist);
+      artist.popularSongs.push(song.id);
+      if (song.album && !artist.albums.includes(song.album)) {
+        artist.albums.push(song.album);
+      }
+      if (song.genre) {
+        song.genre.forEach(genre => {
+          if (!artist.genres.includes(genre)) {
+            artist.genres.push(genre);
+          }
+        });
+      }
+    }
   });
-  const [volume, setVolume] = useState([50]);
-  const [progress, setProgress] = useState([0]);
-  const [aiModeEnabled, setAiModeEnabled] = useState(false);
 
-  const handleAiModeToggle = () => {
-    setAiModeEnabled(!aiModeEnabled);
-  };
+  const artists = Array.from(artistsMap.values());
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleSkipForward = () => {
-    const nextIndex = (currentSongIndex + 1) % songs.length;
-    setCurrentSongIndex(nextIndex);
-    setCurrentSong({
-      title: songs[nextIndex].title,
-      artist: songs[nextIndex].artist,
-      duration: songs[nextIndex].duration,
-      cover: songs[nextIndex].cover
-    });
-    setProgress([0]);
-  };
-
-  const handleSkipBack = () => {
-    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    setCurrentSongIndex(prevIndex);
-    setCurrentSong({
-      title: songs[prevIndex].title,
-      artist: songs[prevIndex].artist,
-      duration: songs[prevIndex].duration,
-      cover: songs[prevIndex].cover
-    });
-    setProgress([0]);
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header />
-      
-      <div className="flex flex-col md:flex-row">
-        <Sidebar 
-          aiModeEnabled={aiModeEnabled}
-          handleAiModeToggle={handleAiModeToggle}
-        />
-
-        <div className="flex-1 p-4 pb-24">
-          <h2 className="text-2xl font-bold mb-6">Artists</h2>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {artists.map((artist) => (
-              <Link to={`/artists/${artist.id}`} key={artist.id}>
-                <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-colors">
-                  <CardContent className="p-4 flex flex-col items-center">
-                    <img 
-                      src={artist.image} 
-                      alt={`${artist.name}`}
-                      className="w-32 h-32 rounded-full object-cover mb-4"
-                    />
-                    <h3 className="font-semibold text-center text-white">{artist.name}</h3>
-                    <p className="text-xs text-gray-400 text-center mt-1">{artist.genres.slice(0, 2).join(", ")}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
         </div>
       </div>
+    );
+  }
 
-      <PlayerControls 
-        isPlaying={isPlaying}
-        currentSong={currentSong}
-        handlePlayPause={handlePlayPause}
-        handleSkipForward={handleSkipForward}
-        handleSkipBack={handleSkipBack}
-        progress={progress}
-        setProgress={setProgress}
-        volume={volume}
-        setVolume={setVolume}
-      />
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center text-red-400">
+          <p>Error loading artists</p>
+          <p className="text-sm text-gray-400 mt-2">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Artists</h1>
+        <p className="text-gray-400">{artists.length} artists</p>
+      </div>
+      
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+        {artists.map((artist) => (
+          <Link key={artist.id} to={`/artists/${artist.id}`}>
+            <Card className="group hover:scale-105 transition-transform cursor-pointer">
+              <CardContent className="p-4">
+                <div className="aspect-square mb-4 overflow-hidden rounded-lg">
+                  <img
+                    src={artist.image}
+                    alt={artist.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="font-semibold text-center truncate">{artist.name}</h3>
+                <p className="text-sm text-gray-400 text-center">
+                  {artist.popularSongs.length} song{artist.popularSongs.length !== 1 ? 's' : ''}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 };

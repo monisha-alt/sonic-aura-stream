@@ -1,55 +1,68 @@
 
-import { useState } from 'react';
-import { songs } from "@/data";
+import { useState } from "react";
+import { useSongs } from "./useSongs";
 
-export type EmotionType = "Happy" | "Sad" | "Energetic" | "Relaxed" | "Focused" | null;
+export type EmotionType = "happy" | "sad" | "energetic" | "calm" | "angry" | "romantic" | "nostalgic";
 
 export const useEmotionDetection = () => {
-  const [detectedEmotion, setDetectedEmotion] = useState<EmotionType>(null);
+  const [detectedEmotion, setDetectedEmotion] = useState<EmotionType | null>(null);
+  const { data: songs = [] } = useSongs();
 
-  const detectEmotionFromText = (text: string): EmotionType => {
-    const text_lower = text.toLowerCase();
+  const detectEmotionFromText = (text: string): EmotionType | null => {
+    const lowerText = text.toLowerCase();
     
-    const happyKeywords = ['happy', 'joy', 'excited', 'great', 'wonderful', 'awesome', 'love'];
-    const sadKeywords = ['sad', 'depressed', 'unhappy', 'down', 'blue', 'terrible', 'miss'];
-    const energeticKeywords = ['energetic', 'pumped', 'workout', 'run', 'active', 'party', 'dance'];
-    const relaxedKeywords = ['relax', 'calm', 'peaceful', 'sleep', 'rest', 'chill', 'unwind'];
-    const focusedKeywords = ['focus', 'concentrate', 'study', 'work', 'productivity', 'attention'];
-    
-    // Check for matches
-    if (happyKeywords.some(keyword => text_lower.includes(keyword))) return "Happy";
-    if (sadKeywords.some(keyword => text_lower.includes(keyword))) return "Sad";
-    if (energeticKeywords.some(keyword => text_lower.includes(keyword))) return "Energetic";
-    if (relaxedKeywords.some(keyword => text_lower.includes(keyword))) return "Relaxed";
-    if (focusedKeywords.some(keyword => text_lower.includes(keyword))) return "Focused";
-    
-    // Analyze speech pattern (simplified simulation)
-    const words = text_lower.split(' ');
-    if (words.length > 0) {
-      if (words.length > 10 && text.includes('!')) return "Energetic";
-      if (words.length < 5) return "Focused";
+    // Enhanced emotion detection patterns
+    const emotionPatterns: { [key in EmotionType]: string[] } = {
+      happy: ["happy", "joy", "excited", "cheerful", "upbeat", "positive", "great", "amazing", "wonderful", "fantastic"],
+      sad: ["sad", "depressed", "down", "melancholy", "blue", "tearful", "crying", "heartbroken", "lonely", "empty"],
+      energetic: ["energy", "pump", "workout", "gym", "run", "dance", "party", "hype", "intense", "powerful"],
+      calm: ["calm", "relax", "peaceful", "chill", "zen", "meditate", "quiet", "serene", "tranquil", "soothing"],
+      angry: ["angry", "mad", "frustrated", "rage", "furious", "annoyed", "pissed", "irritated", "livid"],
+      romantic: ["love", "romance", "heart", "kiss", "valentine", "date", "crush", "passion", "tender", "sweet"],
+      nostalgic: ["memory", "past", "nostalgia", "remember", "childhood", "old", "vintage", "classic", "throwback"]
+    };
+
+    for (const [emotion, patterns] of Object.entries(emotionPatterns)) {
+      if (patterns.some(pattern => lowerText.includes(pattern))) {
+        return emotion as EmotionType;
+      }
     }
-    
-    return null; // No clear emotion detected
+
+    return null;
   };
 
-  const getSongRecommendationsForEmotion = (emotion: EmotionType) => {
-    if (!emotion) return [];
+  const getSongRecommendationsForEmotion = (emotion: EmotionType | null) => {
+    if (!emotion || songs.length === 0) return [];
+
+    // Map emotions to song moods
+    const emotionToMoodMap: { [key in EmotionType]: string[] } = {
+      happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
+      sad: ["Sad", "Melancholy", "Emotional", "Dark"],
+      energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
+      calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
+      angry: ["Intense", "Dark", "Aggressive", "Heavy"],
+      romantic: ["Romantic", "Love", "Tender", "Sweet"],
+      nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
+    };
+
+    const targetMoods = emotionToMoodMap[emotion];
     
-    // Filter songs based on matching mood
+    // Filter songs by matching moods
     const matchingSongs = songs.filter(song => 
-      song.mood && song.mood.some(m => 
-        m.toLowerCase() === emotion.toLowerCase() ||
-        (emotion === "Happy" && (m === "Upbeat" || m === "Summer")) ||
-        (emotion === "Sad" && (m === "Melancholic" || m === "Dark")) ||
-        (emotion === "Energetic" && (m === "Dance" || m === "Upbeat")) ||
-        (emotion === "Relaxed" && (m === "Romantic" || m === "Smooth")) ||
-        (emotion === "Focused" && (m === "Revolutionary" || m === "Quirky"))
+      song.mood && song.mood.some(mood => 
+        targetMoods.some(targetMood => 
+          mood.toLowerCase().includes(targetMood.toLowerCase())
+        )
       )
     );
-    
-    // Return up to 3 song recommendations
-    return matchingSongs.slice(0, 3);
+
+    // Return up to 3 recommendations
+    return matchingSongs.slice(0, 3).map(song => ({
+      id: song.id,
+      title: song.title,
+      artist: song.artist,
+      cover: song.cover_url || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop'
+    }));
   };
 
   return {

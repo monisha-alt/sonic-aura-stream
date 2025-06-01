@@ -1,85 +1,63 @@
 
-import React from "react";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import { useState } from "react";
-import { songs } from "@/data";
-import PlayerControls from "@/components/PlayerControls";
+import { useSongs } from "@/hooks/useSongs";
 import AlbumGrid from "@/components/AlbumGrid";
 
 const AlbumsPage = () => {
-  // Simplified player state (duplicated from Index page for standalone functionality)
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const [currentSong, setCurrentSong] = useState({
-    title: songs[0].title,
-    artist: songs[0].artist,
-    duration: songs[0].duration,
-    cover: songs[0].cover
+  const { data: songs = [], isLoading, error } = useSongs();
+
+  // Group songs by album
+  const albumsMap = new Map();
+  songs.forEach(song => {
+    const albumKey = `${song.album}-${song.artist}`;
+    if (!albumsMap.has(albumKey)) {
+      albumsMap.set(albumKey, {
+        id: song.id,
+        title: song.album || 'Unknown Album',
+        artist: song.artist,
+        cover: song.cover_url || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop',
+        releaseYear: song.release_year || 2023,
+        tracks: [song.id],
+        genre: song.genre || [],
+        language: song.language || 'English',
+        mood: song.mood || []
+      });
+    } else {
+      const album = albumsMap.get(albumKey);
+      album.tracks.push(song.id);
+    }
   });
-  const [volume, setVolume] = useState([50]);
-  const [progress, setProgress] = useState([0]);
-  const [aiModeEnabled, setAiModeEnabled] = useState(false);
 
-  const handleAiModeToggle = () => {
-    setAiModeEnabled(!aiModeEnabled);
-  };
+  const albums = Array.from(albumsMap.values());
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleSkipForward = () => {
-    const nextIndex = (currentSongIndex + 1) % songs.length;
-    setCurrentSongIndex(nextIndex);
-    setCurrentSong({
-      title: songs[nextIndex].title,
-      artist: songs[nextIndex].artist,
-      duration: songs[nextIndex].duration,
-      cover: songs[nextIndex].cover
-    });
-    setProgress([0]);
-  };
-
-  const handleSkipBack = () => {
-    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
-    setCurrentSongIndex(prevIndex);
-    setCurrentSong({
-      title: songs[prevIndex].title,
-      artist: songs[prevIndex].artist,
-      duration: songs[prevIndex].duration,
-      cover: songs[prevIndex].cover
-    });
-    setProgress([0]);
-  };
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <Header />
-      
-      <div className="flex flex-col md:flex-row">
-        <Sidebar 
-          aiModeEnabled={aiModeEnabled}
-          handleAiModeToggle={handleAiModeToggle}
-        />
-
-        <div className="flex-1 p-4 pb-24">
-          <h2 className="text-2xl font-bold mb-6">Albums</h2>
-          <AlbumGrid showYear={true} />
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
         </div>
       </div>
+    );
+  }
 
-      <PlayerControls 
-        isPlaying={isPlaying}
-        currentSong={currentSong}
-        handlePlayPause={handlePlayPause}
-        handleSkipForward={handleSkipForward}
-        handleSkipBack={handleSkipBack}
-        progress={progress}
-        setProgress={setProgress}
-        volume={volume}
-        setVolume={setVolume}
-      />
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center text-red-400">
+          <p>Error loading albums</p>
+          <p className="text-sm text-gray-400 mt-2">Please try refreshing the page</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold">Albums</h1>
+        <p className="text-gray-400">{albums.length} albums</p>
+      </div>
+      
+      <AlbumGrid albums={albums} />
     </div>
   );
 };
