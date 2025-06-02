@@ -11,7 +11,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Music, Headphones, Users, Share2, Wand2 } from "lucide-react";
+import { Music, Headphones, Users, Share2, Wand2, Library } from "lucide-react";
 
 const MainNavigationMenu = () => {
   const location = useLocation();
@@ -23,6 +23,20 @@ const MainNavigationMenu = () => {
   return (
     <NavigationMenu className="hidden md:flex">
       <NavigationMenuList>
+        <NavigationMenuItem>
+          <Link to="/library">
+            <NavigationMenuLink 
+              className={cn(
+                navigationMenuTriggerStyle(),
+                isActive("/library") && "bg-accent text-accent-foreground"
+              )}
+            >
+              <Library className="w-4 h-4 mr-2" />
+              Library
+            </NavigationMenuLink>
+          </Link>
+        </NavigationMenuItem>
+
         <NavigationMenuItem>
           <Link to="/albums">
             <NavigationMenuLink 

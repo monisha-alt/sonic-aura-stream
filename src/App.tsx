@@ -14,6 +14,7 @@ import LyricsPage from "./pages/LyricsPage";
 import RemixPage from "./pages/RemixPage";
 import ContextualPage from "./pages/ContextualPage";
 import LiveSessionsPage from "./pages/LiveSessionsPage";
+import MusicLibraryPage from "./pages/MusicLibraryPage";
 import NotFound from "./pages/NotFound";
 import Chatbot from "./components/Chatbot";
 import EnhancedHeader from "./components/EnhancedHeader";
@@ -55,6 +56,7 @@ const App = () => (
           <Route path="/albums/:id" element={<AlbumDetailPage />} />
           <Route path="/artists" element={<ArtistsPage />} />
           <Route path="/artists/:id" element={<ArtistDetailPage />} />
+          <Route path="/library" element={<MusicLibraryPage />} />
           <Route path="/lyrics/:songId" element={<LyricsPage />} />
           <Route path="/remix/:songId" element={<RemixPage />} />
           <Route path="/contextual" element={<ContextualPage />} />
