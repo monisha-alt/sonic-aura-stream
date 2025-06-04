@@ -23,6 +23,8 @@ export const useSongs = () => {
   return useQuery({
     queryKey: ['songs'],
     queryFn: async () => {
+      console.log('Fetching songs from Supabase...');
+      
       const { data, error } = await supabase
         .from('songs')
         .select('*')
@@ -33,6 +35,7 @@ export const useSongs = () => {
         throw error;
       }
       
+      console.log('Successfully fetched songs:', data?.length || 0, 'songs');
       return data as Song[];
     },
   });

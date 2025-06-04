@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
@@ -19,14 +18,23 @@ const Index = () => {
   const [currentSong, setCurrentSong] = useState<any>(null);
   const { toast } = useToast();
 
-  // Fetch songs from Supabase - hooks must be called before any early returns
+  // Fetch songs from Supabase
   const { data: songs = [], isLoading: songsLoading, error: songsError } = useSongs();
   const { data: playlists = [], isLoading: playlistsLoading } = usePlaylists();
+
+  // Debug logging
+  useEffect(() => {
+    console.log('Songs data:', songs);
+    console.log('Songs loading:', songsLoading);
+    console.log('Songs error:', songsError);
+    console.log('Songs length:', songs.length);
+  }, [songs, songsLoading, songsError]);
 
   // Set initial song when data loads
   useEffect(() => {
     if (songs.length > 0 && !currentSong) {
       const firstSong = songs[0];
+      console.log('Setting first song:', firstSong);
       setCurrentSong({
         title: firstSong.title,
         artist: firstSong.artist,
@@ -139,25 +147,41 @@ const Index = () => {
     });
   };
 
-  // Show loading state - moved after all hooks
+  // Show loading state
   if (songsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
           <p className="text-lg">Loading your music...</p>
+          <p className="text-sm text-gray-400 mt-2">Fetching songs from database...</p>
         </div>
       </div>
     );
   }
 
-  // Show error state - moved after all hooks
+  // Show error state
   if (songsError) {
+    console.error('Error loading songs:', songsError);
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-lg text-red-400 mb-4">Error loading songs</p>
-          <p className="text-sm text-gray-400">Please try refreshing the page</p>
+          <p className="text-sm text-gray-400">Please check your database connection</p>
+          <p className="text-xs text-gray-500 mt-2">Error: {songsError.message}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show no data state
+  if (songs.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg text-yellow-400 mb-4">No songs found</p>
+          <p className="text-sm text-gray-400">Your music database appears to be empty</p>
+          <p className="text-xs text-gray-500 mt-2">Please add some songs to your database</p>
         </div>
       </div>
     );
@@ -178,6 +202,7 @@ const Index = () => {
 
         <div className="flex-1 p-4">
           <h2 className="text-2xl font-bold mb-6">Your AI-Powered Recommendations</h2>
+          <p className="text-sm text-gray-400 mb-4">Found {songs.length} songs in your library</p>
           
           {currentSong && <CurrentSongDisplay currentSong={currentSong} />}
           
