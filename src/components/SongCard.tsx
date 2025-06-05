@@ -58,7 +58,7 @@ const SongCard: React.FC<SongCardProps> = ({
             />
             <button
               onClick={onPlay}
-              className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
+              className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md hover:bg-opacity-70"
             >
               <Play className="w-6 h-6 text-white" />
             </button>

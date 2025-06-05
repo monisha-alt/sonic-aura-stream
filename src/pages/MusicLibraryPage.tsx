@@ -1,10 +1,12 @@
-
 import { useSongs } from "@/hooks/useSongs";
 import SongCard from "@/components/SongCard";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useToast } from "@/hooks/use-toast";
+import AudioPlayerControls from "@/components/AudioPlayerControls";
 
 const MusicLibraryPage = () => {
   const { data: songs = [], isLoading, error } = useSongs();
@@ -12,10 +14,34 @@ const MusicLibraryPage = () => {
   const [languageFilter, setLanguageFilter] = useState("all");
   const [genreFilter, setGenreFilter] = useState("all");
   const [sortBy, setSortBy] = useState("listens");
+  const { toast } = useToast();
+
+  // Audio player hook
+  const {
+    isPlaying,
+    currentSong,
+    progress,
+    volume,
+    duration,
+    playSong,
+    togglePlayPause,
+    seekTo,
+    setVolume,
+    formatTime
+  } = useAudioPlayer();
 
   console.log('MusicLibraryPage - Songs:', songs.length);
   console.log('MusicLibraryPage - Loading:', isLoading);
   console.log('MusicLibraryPage - Error:', error);
+
+  const handleSongPlay = (song: any) => {
+    playSong(song);
+    toast({
+      title: "Now Playing",
+      description: `${song.title} by ${song.artist}`,
+      duration: 2000,
+    });
+  };
 
   // Get unique languages and genres for filters
   const languages = [...new Set(songs.map(song => song.language).filter(Boolean))];
@@ -81,7 +107,7 @@ const MusicLibraryPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-8 pb-24">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Music Library</h1>
           <div className="flex items-center gap-2">
@@ -190,13 +216,25 @@ const MusicLibraryPage = () => {
                 language={song.language || 'Unknown'}
                 mood={song.mood || []}
                 listens={song.listens || 0}
-                onPlay={() => console.log('Playing:', song.title)}
+                onPlay={() => handleSongPlay(song)}
                 onLike={() => console.log('Liked:', song.title)}
               />
             ))}
           </div>
         )}
       </div>
+
+      <AudioPlayerControls
+        isPlaying={isPlaying}
+        currentSong={currentSong}
+        progress={progress}
+        volume={volume}
+        duration={duration}
+        onPlayPause={togglePlayPause}
+        onSeek={seekTo}
+        onVolumeChange={setVolume}
+        formatTime={formatTime}
+      />
     </div>
   );
 };
