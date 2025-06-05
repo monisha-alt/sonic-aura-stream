@@ -2,7 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Play, Pause, Volume2, Heart } from "lucide-react";
+import { Play, Pause, Volume2, Heart, SkipBack, SkipForward, Shuffle, Repeat, Repeat1 } from "lucide-react";
 import { Song } from "@/hooks/useSongs";
 
 interface AudioPlayerControlsProps {
@@ -11,9 +11,15 @@ interface AudioPlayerControlsProps {
   progress: number[];
   volume: number[];
   duration: number;
+  isShuffled: boolean;
+  repeatMode: 'off' | 'all' | 'one';
   onPlayPause: () => void;
   onSeek: (value: number[]) => void;
   onVolumeChange: (value: number[]) => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  onToggleShuffle: () => void;
+  onToggleRepeat: () => void;
   formatTime: (seconds: number) => string;
 }
 
@@ -23,9 +29,15 @@ const AudioPlayerControls = ({
   progress,
   volume,
   duration,
+  isShuffled,
+  repeatMode,
   onPlayPause,
   onSeek,
   onVolumeChange,
+  onNext,
+  onPrevious,
+  onToggleShuffle,
+  onToggleRepeat,
   formatTime
 }: AudioPlayerControlsProps) => {
   if (!currentSong) {
@@ -33,6 +45,17 @@ const AudioPlayerControls = ({
   }
 
   const currentTime = (progress[0] / 100) * duration;
+
+  const getRepeatIcon = () => {
+    switch (repeatMode) {
+      case 'one':
+        return <Repeat1 className="h-4 w-4" />;
+      case 'all':
+        return <Repeat className="h-4 w-4" />;
+      default:
+        return <Repeat className="h-4 w-4" />;
+    }
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 p-4 z-50">
@@ -55,14 +78,42 @@ const AudioPlayerControls = ({
         
         {/* Player Controls */}
         <div className="w-full md:w-1/3 flex flex-col items-center space-y-2">
-          <Button 
-            onClick={onPlayPause}
-            variant="secondary" 
-            size="icon" 
-            className="h-10 w-10 rounded-full bg-purple-600 hover:bg-purple-700"
-          >
-            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-          </Button>
+          <div className="flex items-center space-x-2">
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={onToggleShuffle}
+              className={isShuffled ? "text-purple-400" : "text-gray-400"}
+            >
+              <Shuffle className="h-4 w-4" />
+            </Button>
+            
+            <Button variant="ghost" size="icon" onClick={onPrevious}>
+              <SkipBack className="h-4 w-4" />
+            </Button>
+            
+            <Button 
+              onClick={onPlayPause}
+              variant="secondary" 
+              size="icon" 
+              className="h-10 w-10 rounded-full bg-purple-600 hover:bg-purple-700"
+            >
+              {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            </Button>
+            
+            <Button variant="ghost" size="icon" onClick={onNext}>
+              <SkipForward className="h-4 w-4" />
+            </Button>
+            
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={onToggleRepeat}
+              className={repeatMode !== 'off' ? "text-purple-400" : "text-gray-400"}
+            >
+              {getRepeatIcon()}
+            </Button>
+          </div>
           
           <div className="w-full flex items-center space-x-2 text-xs text-gray-400">
             <span>{formatTime(currentTime)}</span>

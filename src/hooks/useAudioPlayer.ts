@@ -8,6 +8,10 @@ export const useAudioPlayer = () => {
   const [progress, setProgress] = useState([0]);
   const [volume, setVolume] = useState([50]);
   const [duration, setDuration] = useState(0);
+  const [isShuffled, setIsShuffled] = useState(false);
+  const [repeatMode, setRepeatMode] = useState<'off' | 'all' | 'one'>('off');
+  const [currentPlaylist, setCurrentPlaylist] = useState<Song[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Initialize audio element
@@ -28,8 +32,7 @@ export const useAudioPlayer = () => {
     };
 
     const handleEnded = () => {
-      setIsPlaying(false);
-      setProgress([0]);
+      handleSongEnd();
     };
 
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
@@ -50,6 +53,30 @@ export const useAudioPlayer = () => {
       audioRef.current.volume = volume[0] / 100;
     }
   }, [volume]);
+
+  const handleSongEnd = () => {
+    if (repeatMode === 'one') {
+      // Repeat current song
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play();
+      }
+    } else if (repeatMode === 'all' || currentIndex < currentPlaylist.length - 1) {
+      // Play next song
+      playNext();
+    } else {
+      // Stop playing
+      setIsPlaying(false);
+      setProgress([0]);
+    }
+  };
+
+  const playPlaylist = (playlist: Song[], startIndex: number = 0) => {
+    const shuffledPlaylist = isShuffled ? [...playlist].sort(() => Math.random() - 0.5) : playlist;
+    setCurrentPlaylist(shuffledPlaylist);
+    setCurrentIndex(startIndex);
+    playSong(shuffledPlaylist[startIndex]);
+  };
 
   const playSong = (song: Song) => {
     if (!audioRef.current || !song.audio_url) return;
@@ -92,6 +119,55 @@ export const useAudioPlayer = () => {
     }
   };
 
+  const playNext = () => {
+    if (currentPlaylist.length === 0) return;
+    
+    let nextIndex = currentIndex + 1;
+    if (nextIndex >= currentPlaylist.length) {
+      if (repeatMode === 'all') {
+        nextIndex = 0;
+      } else {
+        return;
+      }
+    }
+    
+    setCurrentIndex(nextIndex);
+    playSong(currentPlaylist[nextIndex]);
+  };
+
+  const playPrevious = () => {
+    if (currentPlaylist.length === 0) return;
+    
+    let prevIndex = currentIndex - 1;
+    if (prevIndex < 0) {
+      if (repeatMode === 'all') {
+        prevIndex = currentPlaylist.length - 1;
+      } else {
+        return;
+      }
+    }
+    
+    setCurrentIndex(prevIndex);
+    playSong(currentPlaylist[prevIndex]);
+  };
+
+  const toggleShuffle = () => {
+    setIsShuffled(!isShuffled);
+    if (currentPlaylist.length > 0) {
+      const newPlaylist = !isShuffled 
+        ? [...currentPlaylist].sort(() => Math.random() - 0.5)
+        : [...currentPlaylist]; // You might want to restore original order here
+      setCurrentPlaylist(newPlaylist);
+    }
+  };
+
+  const toggleRepeat = () => {
+    const modes: ('off' | 'all' | 'one')[] = ['off', 'all', 'one'];
+    const currentModeIndex = modes.indexOf(repeatMode);
+    const nextMode = modes[(currentModeIndex + 1) % modes.length];
+    setRepeatMode(nextMode);
+  };
+
   const seekTo = (progressValue: number[]) => {
     if (!audioRef.current || !duration) return;
     
@@ -112,8 +188,17 @@ export const useAudioPlayer = () => {
     progress,
     volume,
     duration,
+    isShuffled,
+    repeatMode,
+    currentPlaylist,
+    currentIndex,
     playSong,
+    playPlaylist,
     togglePlayPause,
+    playNext,
+    playPrevious,
+    toggleShuffle,
+    toggleRepeat,
     seekTo,
     setVolume,
     formatTime

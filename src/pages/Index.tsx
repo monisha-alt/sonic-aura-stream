@@ -17,15 +17,22 @@ const Index = () => {
   // Fetch songs from Supabase
   const { data: songs = [], isLoading: songsLoading, error: songsError } = useSongs();
   
-  // Audio player hook
+  // Audio player hook with new features
   const {
     isPlaying,
     currentSong,
     progress,
     volume,
     duration,
+    isShuffled,
+    repeatMode,
     playSong,
+    playPlaylist,
     togglePlayPause,
+    playNext,
+    playPrevious,
+    toggleShuffle,
+    toggleRepeat,
     seekTo,
     setVolume,
     formatTime
@@ -51,7 +58,9 @@ const Index = () => {
   };
 
   const handleSongPlay = (song: any) => {
-    playSong(song);
+    // Create a playlist from all songs and play the selected one
+    const songIndex = songs.findIndex(s => s.id === song.id);
+    playPlaylist(songs, songIndex);
     toast({
       title: "Now Playing",
       description: `${song.title} by ${song.artist}`,
@@ -153,9 +162,15 @@ const Index = () => {
         progress={progress}
         volume={volume}
         duration={duration}
+        isShuffled={isShuffled}
+        repeatMode={repeatMode}
         onPlayPause={togglePlayPause}
         onSeek={seekTo}
         onVolumeChange={setVolume}
+        onNext={playNext}
+        onPrevious={playPrevious}
+        onToggleShuffle={toggleShuffle}
+        onToggleRepeat={toggleRepeat}
         formatTime={formatTime}
       />
     </div>

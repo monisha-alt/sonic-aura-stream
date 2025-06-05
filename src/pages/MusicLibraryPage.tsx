@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { useToast } from "@/hooks/use-toast";
 import AudioPlayerControls from "@/components/AudioPlayerControls";
+import { Button, Play, Shuffle } from "@/components/ui/button";
 
 const MusicLibraryPage = () => {
   const { data: songs = [], isLoading, error } = useSongs();
@@ -16,15 +17,22 @@ const MusicLibraryPage = () => {
   const [sortBy, setSortBy] = useState("listens");
   const { toast } = useToast();
 
-  // Audio player hook
+  // Audio player hook with enhanced features
   const {
     isPlaying,
     currentSong,
     progress,
     volume,
     duration,
+    isShuffled,
+    repeatMode,
     playSong,
+    playPlaylist,
     togglePlayPause,
+    playNext,
+    playPrevious,
+    toggleShuffle,
+    toggleRepeat,
     seekTo,
     setVolume,
     formatTime
@@ -35,7 +43,9 @@ const MusicLibraryPage = () => {
   console.log('MusicLibraryPage - Error:', error);
 
   const handleSongPlay = (song: any) => {
-    playSong(song);
+    // Create a playlist from filtered songs and play the selected one
+    const songIndex = filteredSongs.findIndex(s => s.id === song.id);
+    playPlaylist(filteredSongs, songIndex);
     toast({
       title: "Now Playing",
       description: `${song.title} by ${song.artist}`,
@@ -194,6 +204,35 @@ const MusicLibraryPage = () => {
           })}
         </div>
         
+        {/* Quick actions for playlist management */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary">{filteredSongs.length} of {songs.length} songs</Badge>
+            <Badge variant="outline">{languages.length} languages</Badge>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => playPlaylist(filteredSongs)}
+              className="bg-purple-600 hover:bg-purple-700"
+              size="sm"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Play All
+            </Button>
+            <Button
+              onClick={() => {
+                const shuffled = [...filteredSongs].sort(() => Math.random() - 0.5);
+                playPlaylist(shuffled);
+              }}
+              variant="outline"
+              size="sm"
+            >
+              <Shuffle className="h-4 w-4 mr-2" />
+              Shuffle All
+            </Button>
+          </div>
+        </div>
+        
         {/* Songs Grid */}
         {filteredSongs.length === 0 ? (
           <div className="text-center py-12">
@@ -230,9 +269,15 @@ const MusicLibraryPage = () => {
         progress={progress}
         volume={volume}
         duration={duration}
+        isShuffled={isShuffled}
+        repeatMode={repeatMode}
         onPlayPause={togglePlayPause}
         onSeek={seekTo}
         onVolumeChange={setVolume}
+        onNext={playNext}
+        onPrevious={playPrevious}
+        onToggleShuffle={toggleShuffle}
+        onToggleRepeat={toggleRepeat}
         formatTime={formatTime}
       />
     </div>
