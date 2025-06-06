@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
@@ -7,7 +8,7 @@ import Sidebar from "@/components/Sidebar";
 import AudioPlayerControls from "@/components/AudioPlayerControls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Play, Shuffle as ShuffleIcon } from "lucide-react"; // Correct import from lucide-react
+import { Play, Shuffle as ShuffleIcon } from "lucide-react";
 
 const MusicLibraryPage = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
@@ -94,7 +95,11 @@ const MusicLibraryPage = () => {
                 {filteredSongs.map((song, index) => (
                   <SongCard 
                     key={song.id}
-                    song={song}
+                    // The SongCard component expects these props, making sure they are explicitly typed
+                    title={song.title}
+                    artist={song.artist}
+                    coverArt={song.cover_url}
+                    duration={song.duration}
                     onPlay={() => playSong(song)}
                     isPlaying={isPlaying && currentSong?.id === song.id}
                   />
