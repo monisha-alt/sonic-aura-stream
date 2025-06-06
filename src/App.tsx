@@ -1,72 +1,39 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
-import Index from "./pages/Index";
-import AlbumsPage from "./pages/AlbumsPage";
-import ArtistsPage from "./pages/ArtistsPage";
-import AlbumDetailPage from "./pages/AlbumDetailPage";
-import ArtistDetailPage from "./pages/ArtistDetailPage";
-import LyricsPage from "./pages/LyricsPage";
-import RemixPage from "./pages/RemixPage";
-import ContextualPage from "./pages/ContextualPage";
-import LiveSessionsPage from "./pages/LiveSessionsPage";
-import MusicLibraryPage from "./pages/MusicLibraryPage";
-import NotFound from "./pages/NotFound";
-import Chatbot from "./components/Chatbot";
-import EnhancedHeader from "./components/EnhancedHeader";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MusicLibraryPage from './pages/MusicLibraryPage';
+import PlaylistsPage from './pages/PlaylistsPage';
+import RemixPage from './pages/RemixPage';
+import ContextualPage from './pages/ContextualPage';
+import AlbumsPage from './pages/AlbumsPage';
+import AlbumDetailPage from './pages/AlbumDetailPage';
+import ArtistsPage from './pages/ArtistsPage';
+import ArtistDetailPage from './pages/ArtistDetailPage';
+import LiveSessionsPage from './pages/LiveSessionsPage';
+import LyricsPage from './pages/LyricsPage';
+import FavoritesPage from './pages/FavoritesPage';
+import NotFound from './pages/NotFound';
+import './App.css';
 
-const queryClient = new QueryClient();
-
-const ThemeInitializer = () => {
-  useEffect(() => {
-    // On page load, check if theme was saved to localStorage
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    
-    // If there's a saved theme, use that
-    if (savedTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else if (savedTheme === "light") {
-      document.documentElement.classList.remove("dark");
-    } else if (prefersDark) {
-      // Otherwise, respect system preference
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
-  }, []);
-  
-  return null;
-};
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <ThemeInitializer />
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <EnhancedHeader />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/albums" element={<AlbumsPage />} />
-          <Route path="/albums/:id" element={<AlbumDetailPage />} />
-          <Route path="/artists" element={<ArtistsPage />} />
-          <Route path="/artists/:id" element={<ArtistDetailPage />} />
-          <Route path="/library" element={<MusicLibraryPage />} />
-          <Route path="/lyrics/:songId" element={<LyricsPage />} />
-          <Route path="/remix/:songId" element={<RemixPage />} />
-          <Route path="/contextual" element={<ContextualPage />} />
-          <Route path="/live" element={<LiveSessionsPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <Chatbot />
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MusicLibraryPage />} />
+        <Route path="/library" element={<MusicLibraryPage />} />
+        <Route path="/playlists" element={<PlaylistsPage />} />
+        <Route path="/remix/:songId?" element={<RemixPage />} />
+        <Route path="/contextual" element={<ContextualPage />} />
+        <Route path="/albums" element={<AlbumsPage />} />
+        <Route path="/albums/:albumId" element={<AlbumDetailPage />} />
+        <Route path="/artists" element={<ArtistsPage />} />
+        <Route path="/artists/:artistId" element={<ArtistDetailPage />} />
+        <Route path="/live" element={<LiveSessionsPage />} />
+        <Route path="/lyrics" element={<LyricsPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router>
+  );
+}
 
 export default App;

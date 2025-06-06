@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Play, Heart, MoreHorizontal } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
 
 interface SongCardProps {
   id: string;
@@ -18,9 +19,11 @@ interface SongCardProps {
   listens: number;
   onPlay?: () => void;
   onLike?: () => void;
+  isFavorited?: boolean;
 }
 
 const SongCard: React.FC<SongCardProps> = ({
+  id,
   title,
   artist,
   album,
@@ -32,8 +35,12 @@ const SongCard: React.FC<SongCardProps> = ({
   mood = [],
   listens,
   onPlay,
-  onLike
+  onLike,
+  isFavorited = false
 }) => {
+  const { toast } = useToast();
+  const [isFavorite, setIsFavorite] = useState(isFavorited);
+  
   const formatListens = (count: number) => {
     if (count >= 1000000) {
       return `${(count / 1000000).toFixed(1)}M`;
@@ -41,6 +48,20 @@ const SongCard: React.FC<SongCardProps> = ({
       return `${(count / 1000).toFixed(1)}K`;
     }
     return count.toString();
+  };
+
+  const handleLike = () => {
+    setIsFavorite(!isFavorite);
+    
+    if (onLike) {
+      onLike();
+    }
+    
+    toast({
+      title: !isFavorite ? "Added to favorites" : "Removed from favorites",
+      description: !isFavorite ? `${title} has been added to your favorites` : `${title} has been removed from your favorites`,
+      duration: 2000,
+    });
   };
 
   return (
@@ -84,10 +105,10 @@ const SongCard: React.FC<SongCardProps> = ({
           <div className="flex flex-col items-end gap-2">
             <div className="flex items-center gap-2">
               <button
-                onClick={onLike}
-                className="text-gray-400 hover:text-red-500 transition-colors"
+                onClick={handleLike}
+                className={`transition-colors ${isFavorite ? "text-red-500" : "text-gray-400 hover:text-red-500"}`}
               >
-                <Heart className="w-4 h-4" />
+                <Heart className="w-4 h-4" fill={isFavorite ? "currentColor" : "none"} />
               </button>
               <button className="text-gray-400 hover:text-white transition-colors">
                 <MoreHorizontal className="w-4 h-4" />
@@ -102,7 +123,7 @@ const SongCard: React.FC<SongCardProps> = ({
           </div>
         </div>
         
-        {mood.length > 0 && (
+        {mood && mood.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1">
             {mood.slice(0, 3).map((m, index) => (
               <span 

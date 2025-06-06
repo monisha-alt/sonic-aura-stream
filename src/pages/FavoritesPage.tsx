@@ -1,21 +1,18 @@
 
 import { useState } from "react";
-import { useSongs } from "@/hooks/useSongs";
-import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import SongCard from "@/components/SongCard";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import AudioPlayerControls from "@/components/AudioPlayerControls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Play, Shuffle as ShuffleIcon, Search } from "lucide-react";
+import { Play, Search } from "lucide-react";
 
-const MusicLibraryPage = () => {
-  const [aiModeEnabled, setAiModeEnabled] = useState(false);
+const FavoritesPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: songs = [], isLoading, error } = useSongs();
-  const { favorites, toggleFavorite, isFavorited } = useFavorites();
+  const { favorites, isLoading, toggleFavorite, isFavorited } = useFavorites();
   const {
     isPlaying,
     currentSong,
@@ -36,11 +33,7 @@ const MusicLibraryPage = () => {
     formatTime
   } = useAudioPlayer();
 
-  const handleAiModeToggle = () => {
-    setAiModeEnabled(!aiModeEnabled);
-  };
-
-  const filteredSongs = songs.filter(song =>
+  const filteredFavorites = favorites.filter(song =>
     song.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
     song.artist.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -49,14 +42,6 @@ const MusicLibraryPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white flex items-center justify-center">
-        <p className="text-red-400">Error loading songs</p>
       </div>
     );
   }
@@ -74,37 +59,38 @@ const MusicLibraryPage = () => {
       
       <div className="flex flex-col md:flex-row">
         <Sidebar 
-          aiModeEnabled={aiModeEnabled}
-          handleAiModeToggle={handleAiModeToggle}
+          aiModeEnabled={false}
+          handleAiModeToggle={() => {}}
         />
         
         <div className="flex-1 p-4 pb-24">
           <div className="max-w-6xl mx-auto">
-            <h1 className="text-3xl font-bold mb-6">Music Library</h1>
+            <h1 className="text-3xl font-bold mb-6">Your Favorites</h1>
             
             <div className="flex items-center mb-6 space-x-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input 
-                  placeholder="Search songs..." 
+                  placeholder="Search favorites..." 
                   className="bg-gray-800 pl-10"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" onClick={() => toggleShuffle()}>
-                <ShuffleIcon className="mr-2 h-4 w-4" />
-                Shuffle
-              </Button>
-              <Button onClick={() => playPlaylist(filteredSongs, 0)} className="bg-purple-600 hover:bg-purple-700">
+              
+              <Button 
+                onClick={() => playPlaylist(filteredFavorites, 0)} 
+                className="bg-purple-600 hover:bg-purple-700"
+                disabled={filteredFavorites.length === 0}
+              >
                 <Play className="mr-2 h-4 w-4" />
                 Play All
               </Button>
             </div>
             
-            {filteredSongs.length > 0 ? (
+            {filteredFavorites.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredSongs.map((song) => (
+                {filteredFavorites.map((song) => (
                   <SongCard 
                     key={song.id}
                     id={song.id}
@@ -125,7 +111,16 @@ const MusicLibraryPage = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-center text-gray-400 py-10">No songs match your search criteria.</p>
+              <div className="text-center py-16">
+                <h2 className="text-2xl font-semibold mb-2 text-gray-300">No favorites yet</h2>
+                <p className="text-gray-400 mb-6">Start adding songs to your favorites</p>
+                <Button 
+                  className="bg-purple-600 hover:bg-purple-700"
+                  onClick={() => window.location.href = '/library'}
+                >
+                  Browse Library
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -152,4 +147,4 @@ const MusicLibraryPage = () => {
   );
 };
 
-export default MusicLibraryPage;
+export default FavoritesPage;
