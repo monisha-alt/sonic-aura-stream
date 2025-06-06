@@ -12,9 +12,9 @@ interface SongCardProps {
   duration: string;
   cover: string;
   releaseYear: number;
-  genre: string[];
+  genre?: string[];
   language: string;
-  mood: string[];
+  mood?: string[];
   listens: number;
   onPlay?: () => void;
   onLike?: () => void;
@@ -27,9 +27,9 @@ const SongCard: React.FC<SongCardProps> = ({
   duration,
   cover,
   releaseYear,
-  genre,
+  genre = [],
   language,
-  mood,
+  mood = [],
   listens,
   onPlay,
   onLike

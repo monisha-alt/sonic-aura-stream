@@ -59,6 +59,13 @@ const MusicLibraryPage = () => {
     );
   }
 
+  const formatDuration = (seconds: number | null): string => {
+    if (!seconds) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <Header />
@@ -80,7 +87,7 @@ const MusicLibraryPage = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="outline">
+              <Button variant="outline" onClick={() => toggleShuffle()}>
                 <ShuffleIcon className="mr-2 h-4 w-4" />
                 Shuffle
               </Button>
@@ -95,13 +102,19 @@ const MusicLibraryPage = () => {
                 {filteredSongs.map((song, index) => (
                   <SongCard 
                     key={song.id}
-                    // The SongCard component expects these props, making sure they are explicitly typed
+                    id={song.id}
                     title={song.title}
                     artist={song.artist}
-                    coverArt={song.cover_url}
-                    duration={song.duration}
+                    album={song.album || ""}
+                    duration={formatDuration(song.duration)}
+                    cover={song.cover_url || ""}
+                    releaseYear={song.release_year || 0}
+                    genre={song.genre}
+                    language={song.language || "Unknown"}
+                    mood={song.mood}
+                    listens={song.listens || 0}
                     onPlay={() => playSong(song)}
-                    isPlaying={isPlaying && currentSong?.id === song.id}
+                    onLike={() => console.log(`Liked song: ${song.title}`)}
                   />
                 ))}
               </div>
