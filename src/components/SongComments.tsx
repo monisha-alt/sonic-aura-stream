@@ -1,14 +1,14 @@
-import React, { useState, useRef } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Form, FormField, FormItem, FormControl } from "@/components/ui/form";
 import { Clock, Heart, Send, MessageSquare, Music } from "lucide-react";
-import { comments as allComments, CommentType } from "@/data";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useComments, useAddComment, Comment } from "@/hooks/useComments";
 
 interface SongCommentsProps {
   songId: string;
@@ -23,8 +23,8 @@ interface CommentFormValues {
 
 const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCommentsProps) => {
   const { toast } = useToast();
-  const isMobile = useIsMobile();
-  const [comments, setComments] = useState<CommentType[]>(allComments[songId] || []);
+  const { data: comments = [], isLoading } = useComments(songId);
+  const addComment = useAddComment();
   const commentListRef = useRef<HTMLDivElement>(null);
 
   const form = useForm<CommentFormValues>({
@@ -35,39 +35,37 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
   });
 
   const onSubmit = (data: CommentFormValues) => {
-    const newComment: CommentType = {
-      id: `c${Date.now()}`,
-      songId: songId,
-      userId: "currentUser",
-      timestamp: data.timestamp,
-      text: data.text,
-      createdAt: new Date(),
-      likes: 0
-    };
-
-    setComments((prev) => [newComment, ...prev]);
-    form.reset();
-
-    if (commentListRef.current) {
-      commentListRef.current.scrollTop = 0;
-    }
-
-    toast({
-      title: "Comment added",
-      description: "Your comment has been added successfully.",
-      duration: 2000,
+    // Convert timestamp to seconds for storage
+    const [mins, secs] = data.timestamp.split(':').map(Number);
+    const timestampInSeconds = (mins * 60) + (secs || 0);
+    
+    addComment.mutate({
+      song_id: songId,
+      content: data.text,
+      timestamp_in_song: timestampInSeconds
+    }, {
+      onSuccess: () => {
+        form.reset();
+        
+        toast({
+          title: "Comment added",
+          description: "Your comment has been added successfully.",
+          duration: 2000,
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Error",
+          description: "Failed to add comment. Please try again.",
+          variant: "destructive",
+          duration: 3000,
+        });
+        console.error("Error adding comment:", error);
+      }
     });
   };
 
   const handleLikeComment = (commentId: string) => {
-    setComments((prev) => 
-      prev.map((comment) => 
-        comment.id === commentId 
-          ? { ...comment, likes: comment.likes + 1 } 
-          : comment
-      )
-    );
-
     toast({
       title: "Liked",
       description: "You liked this comment",
@@ -86,7 +84,15 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
     }
   };
 
-  React.useEffect(() => {
+  // Format seconds to MM:SS
+  const formatTimestamp = (seconds: number | null): string => {
+    if (seconds === null) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
     form.setValue("timestamp", currentTime);
   }, [currentTime, form]);
 
@@ -95,7 +101,7 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
       <div className="flex items-center justify-between">
         <h3 className="text-xl font-medium flex items-center">
           <MessageSquare className="mr-2 h-5 w-5" /> 
-          Comments ({comments.length})
+          Comments {!isLoading && `(${comments.length})`}
         </h3>
         <Link to={`/remix/${songId}`}>
           <Button variant="outline" className="flex items-center">
@@ -117,6 +123,7 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
                     placeholder="Add your comment about this song..." 
                     className="resize-none bg-gray-800 text-white"
                     {...field}
+                    required
                   />
                 </FormControl>
               </FormItem>
@@ -135,6 +142,8 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
                       <Input 
                         placeholder="0:00" 
                         className="border-0 bg-transparent p-1 w-full text-center focus-visible:ring-0"
+                        pattern="[0-9]+:[0-5][0-9]"
+                        title="Format: M:SS or MM:SS"
                         {...field}
                       />
                     </div>
@@ -146,6 +155,7 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
             <Button 
               type="submit" 
               className="bg-purple-600 hover:bg-purple-700 flex-shrink-0"
+              disabled={addComment.isPending}
             >
               <Send className="mr-2 h-4 w-4" />
               Comment
@@ -158,7 +168,11 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
         className="space-y-4 max-h-96 overflow-y-auto pr-2 pb-2" 
         ref={commentListRef}
       >
-        {comments.length > 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center py-6">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+          </div>
+        ) : comments.length > 0 ? (
           comments.map((comment) => (
             <div 
               key={comment.id} 
@@ -166,27 +180,27 @@ const SongComments = ({ songId, currentTime = "0:00", onTimestampClick }: SongCo
             >
               <div className="flex justify-between items-start mb-2">
                 <button
-                  onClick={() => handleTimestampClick(comment.timestamp)}
+                  onClick={() => handleTimestampClick(formatTimestamp(comment.timestamp_in_song))}
                   className="flex items-center text-purple-400 hover:text-purple-300 text-sm font-medium"
                 >
                   <Clock className="mr-1 h-3.5 w-3.5" />
-                  {comment.timestamp}
+                  {formatTimestamp(comment.timestamp_in_song)}
                 </button>
                 <span className="text-xs text-gray-400">
-                  {new Date(comment.createdAt).toLocaleDateString()}
+                  {new Date(comment.created_at || "").toLocaleDateString()}
                 </span>
               </div>
-              <p className="text-gray-200 mb-3">{comment.text}</p>
+              <p className="text-gray-200 mb-3">{comment.content}</p>
               <div className="flex justify-between items-center">
                 <button
                   onClick={() => handleLikeComment(comment.id)}
                   className="text-gray-400 hover:text-purple-400 text-sm flex items-center"
                 >
                   <Heart className="mr-1 h-3.5 w-3.5" />
-                  {comment.likes}
+                  {comment.likes_count}
                 </button>
                 <span className="text-xs text-gray-500">
-                  User {comment.userId}
+                  User {comment.user_id?.substring(0, 8) || "Anonymous"}
                 </span>
               </div>
             </div>

@@ -3,6 +3,7 @@ import PlaylistManager from "@/components/PlaylistManager";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import AudioPlayerControls from "@/components/AudioPlayerControls";
+import SongComments from "@/components/SongComments";
 
 const PlaylistsPage = () => {
   const { data: songs = [], isLoading, error } = useSongs();
@@ -42,10 +43,34 @@ const PlaylistsPage = () => {
     );
   }
 
+  // Calculate current time for comments
+  const currentTimeInSeconds = (progress[0] / 100) * duration;
+  const currentTimeFormatted = formatTime(currentTimeInSeconds);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
       <div className="container mx-auto px-4 py-8 pb-24">
-        <PlaylistManager songs={songs} onPlayPlaylist={playPlaylist} />
+        {/* Playlist Manager */}
+        <div className="mb-10">
+          <PlaylistManager songs={songs} onPlayPlaylist={playPlaylist} />
+        </div>
+        
+        {/* Current Song Comments */}
+        {currentSong && (
+          <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg">
+            <h2 className="text-xl font-bold mb-4">Current Song: {currentSong.title}</h2>
+            <SongComments 
+              songId={currentSong.id} 
+              currentTime={currentTimeFormatted}
+              onTimestampClick={(timestamp) => {
+                const [mins, secs] = timestamp.split(':').map(Number);
+                const seconds = (mins * 60) + (secs || 0);
+                const progressPercent = (seconds / duration) * 100;
+                seekTo([progressPercent]);
+              }}
+            />
+          </div>
+        )}
       </div>
 
       <AudioPlayerControls
