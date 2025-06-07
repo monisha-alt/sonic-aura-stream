@@ -29,9 +29,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('Setting up auth state listener...');
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         console.log('Auth state changed:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user ?? null);
@@ -41,15 +43,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session?.user?.email);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      console.log('Cleaning up auth subscription');
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (email: string, password: string, username?: string, displayName?: string) => {
+    console.log('Attempting signup for:', email);
     const redirectUrl = `${window.location.origin}/`;
     
     const { error } = await supabase.auth.signUp({
@@ -64,30 +71,54 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
     
+    if (error) {
+      console.error('Signup error:', error);
+    } else {
+      console.log('Signup successful, check email for confirmation');
+    }
+    
     return { error };
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('Attempting signin for:', email);
+    
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
     
+    if (error) {
+      console.error('Signin error:', error);
+    } else {
+      console.log('Signin successful');
+    }
+    
     return { error };
   };
 
   const signOut = async () => {
+    console.log('Signing out...');
     const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error('Signout error:', error);
+    }
     return { error };
   };
 
   const signInWithGoogle = async () => {
+    console.log('Attempting Google signin...');
+    
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/`
       }
     });
+    
+    if (error) {
+      console.error('Google signin error:', error);
+    }
     
     return { error };
   };

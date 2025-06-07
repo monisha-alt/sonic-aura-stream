@@ -24,20 +24,40 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (user) {
+      console.log('User is authenticated, redirecting to home');
       navigate('/');
     }
   }, [user, navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!loginEmail || !loginPassword) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    console.log('Submitting login form...');
 
     const { error } = await signIn(loginEmail, loginPassword);
 
     if (error) {
+      let errorMessage = error.message;
+      
+      if (error.message.includes('Email not confirmed')) {
+        errorMessage = "Please check your email and click the confirmation link before signing in.";
+      } else if (error.message.includes('Invalid login credentials')) {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      }
+      
       toast({
         title: "Login Failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } else {
@@ -53,21 +73,52 @@ const AuthPage = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!signupEmail || !signupPassword) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both email and password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (signupPassword.length < 6) {
+      toast({
+        title: "Password Too Short",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
+    console.log('Submitting signup form...');
 
     const { error } = await signUp(signupEmail, signupPassword, username, displayName);
 
     if (error) {
+      let errorMessage = error.message;
+      
+      if (error.message.includes('already registered')) {
+        errorMessage = "This email is already registered. Please try logging in instead.";
+      }
+      
       toast({
         title: "Signup Failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } else {
       toast({
         title: "Welcome to MusicAI!",
-        description: "Please check your email to verify your account.",
+        description: "Please check your email to verify your account before signing in.",
       });
+      // Clear the form
+      setSignupEmail('');
+      setSignupPassword('');
+      setUsername('');
+      setDisplayName('');
     }
 
     setIsLoading(false);
@@ -75,12 +126,20 @@ const AuthPage = () => {
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
+    console.log('Attempting Google signin...');
+    
     const { error } = await signInWithGoogle();
     
     if (error) {
+      let errorMessage = error.message;
+      
+      if (error.message.includes('provider is not enabled')) {
+        errorMessage = "Google authentication is not properly configured. Please contact support or try email/password login.";
+      }
+      
       toast({
         title: "Google Sign In Failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -181,7 +240,7 @@ const AuthPage = () => {
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       type="text"
-                      placeholder="Username"
+                      placeholder="Username (optional)"
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       className="pl-10 bg-gray-700 border-gray-600 text-white"
@@ -191,7 +250,7 @@ const AuthPage = () => {
                     <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       type="text"
-                      placeholder="Display Name"
+                      placeholder="Display Name (optional)"
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       className="pl-10 bg-gray-700 border-gray-600 text-white"
@@ -201,10 +260,11 @@ const AuthPage = () => {
                     <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <Input
                       type="password"
-                      placeholder="Password"
+                      placeholder="Password (min 6 characters)"
                       value={signupPassword}
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required
+                      minLength={6}
                       className="pl-10 bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
