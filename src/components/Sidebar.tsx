@@ -19,8 +19,6 @@ import {
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
 
 interface SidebarProps {
   aiModeEnabled: boolean;
@@ -28,24 +26,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ aiModeEnabled, handleAiModeToggle }) => {
-  const { user, signOut } = useAuth();
-  const { toast } = useToast();
-
-  const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast({
-        title: "Error signing out",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Signed out successfully",
-        description: "See you next time!",
-      });
-    }
-  };
 
   return (
     <aside className="w-full md:w-64 bg-gray-900 text-gray-100 p-4 flex flex-col h-full">
@@ -186,28 +166,6 @@ const Sidebar: React.FC<SidebarProps> = ({ aiModeEnabled, handleAiModeToggle }) 
         </div>
       </nav>
 
-      {/* User section at bottom */}
-      <div className="mt-auto pt-4 border-t border-gray-800">
-        <div className="flex items-center space-x-3 px-4 py-2 mb-2">
-          <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-            <User className="h-4 w-4" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">
-              {user?.email || 'User'}
-            </p>
-            <p className="text-xs text-gray-400">Premium Member</p>
-          </div>
-        </div>
-        <Button
-          onClick={handleSignOut}
-          variant="ghost"
-          className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800"
-        >
-          <LogOut className="h-4 w-4 mr-3" />
-          Sign Out
-        </Button>
-      </div>
     </aside>
   );
 };

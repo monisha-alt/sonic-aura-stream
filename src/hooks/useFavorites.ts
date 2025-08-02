@@ -1,95 +1,57 @@
 
 import { useState, useEffect } from 'react';
 import { Song } from '@/hooks/useSongs';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 export const useFavorites = () => {
   const [favorites, setFavorites] = useState<Song[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { user } = useAuth();
+  const { toast } = useToast();
 
-  // Function to load favorites from Supabase
+  // Function to load favorites from localStorage
   const loadFavorites = async () => {
-    if (!user) {
-      setFavorites([]);
-      return;
-    }
-
-    setIsLoading(true);
     try {
-      // Get user's favorite song IDs
-      const { data: favoriteIds, error: favError } = await supabase
-        .from('user_favorites')
-        .select('song_id')
-        .eq('user_id', user.id);
-      
-      if (favError) throw new Error(favError.message);
-      
-      if (!favoriteIds || favoriteIds.length === 0) {
-        setFavorites([]);
-        setIsLoading(false);
-        return;
+      const storedFavorites = localStorage.getItem('favorites');
+      if (storedFavorites) {
+        setFavorites(JSON.parse(storedFavorites));
       }
-
-      // Get the actual song data for favorited songs
-      const songIds = favoriteIds.map(fav => fav.song_id);
-      const { data: songs, error: songsError } = await supabase
-        .from('songs')
-        .select('*')
-        .in('id', songIds);
-      
-      if (songsError) throw new Error(songsError.message);
-      
-      setFavorites(songs || []);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load favorites'));
       console.error('Error loading favorites:', err);
-    } finally {
-      setIsLoading(false);
+      setError(err as Error);
     }
   };
 
   // Function to toggle a song as favorite
   const toggleFavorite = async (song: Song) => {
-    if (!user) {
-      console.error('User must be logged in to manage favorites');
-      return false;
-    }
-
     try {
       const isFavorited = favorites.some(fav => fav.id === song.id);
+      let updatedFavorites;
       
       if (isFavorited) {
-        // Remove from favorites
-        const { error } = await supabase
-          .from('user_favorites')
-          .delete()
-          .eq('user_id', user.id)
-          .eq('song_id', song.id);
-        
-        if (error) throw new Error(error.message);
-        
-        setFavorites(prev => prev.filter(fav => fav.id !== song.id));
-        return false;
+        updatedFavorites = favorites.filter(fav => fav.id !== song.id);
+        toast({
+          title: "Removed from favorites",
+          description: `${song.title} removed from your favorites`
+        });
       } else {
-        // Add to favorites
-        const { error } = await supabase
-          .from('user_favorites')
-          .insert({
-            user_id: user.id,
-            song_id: song.id
-          });
-        
-        if (error) throw new Error(error.message);
-        
-        setFavorites(prev => [...prev, song]);
-        return true;
+        updatedFavorites = [...favorites, song];
+        toast({
+          title: "Added to favorites",
+          description: `${song.title} added to your favorites`
+        });
       }
+
+      setFavorites(updatedFavorites);
+      localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+      return !isFavorited;
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to toggle favorite'));
       console.error('Error toggling favorite:', err);
+      toast({
+        title: "Error",
+        description: "Failed to update favorites",
+        variant: "destructive"
+      });
       return false;
     }
   };
@@ -102,7 +64,7 @@ export const useFavorites = () => {
   // Load favorites when user changes
   useEffect(() => {
     loadFavorites();
-  }, [user]);
+  }, []);
 
   return {
     favorites,
