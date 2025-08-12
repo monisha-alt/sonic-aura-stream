@@ -9,6 +9,7 @@ import MoodGenerator from "@/components/MoodGenerator";
 import AudioPlayerControls from "@/components/AudioPlayerControls";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import Chatbot from "@/components/Chatbot";
 
 const Index = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
@@ -155,6 +156,8 @@ const Index = () => {
           <MoodGenerator />
         </div>
       </div>
+
+      <Chatbot />
 
       <AudioPlayerControls
         isPlaying={isPlaying}
