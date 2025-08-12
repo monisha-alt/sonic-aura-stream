@@ -10,6 +10,7 @@ import AudioPlayerControls from "@/components/AudioPlayerControls";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Play, Shuffle as ShuffleIcon, Search } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const MusicLibraryPage = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
@@ -81,6 +82,15 @@ const MusicLibraryPage = () => {
         <div className="flex-1 p-4 pb-24">
           <div className="max-w-6xl mx-auto">
             <h1 className="text-3xl font-bold mb-6">Music Library</h1>
+            
+            {songs.length > 0 && songs.some(s => s.audio_url && s.audio_url.includes('itunes')) && (
+              <Alert className="mb-4">
+                <AlertTitle>Loaded sample songs</AlertTitle>
+                <AlertDescription>
+                  Showing ~50 Indian previews from iTunes. Tap Play All or any song to listen.
+                </AlertDescription>
+              </Alert>
+            )}
             
             <div className="flex items-center mb-6 space-x-4">
               <div className="relative flex-1">
