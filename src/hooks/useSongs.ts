@@ -19,27 +19,38 @@ export interface Song {
   updated_at: string | null;
 }
 
-export const useSongs = () => {
+export const useSongs = (source: 'auto' | 'itunes' | 'supabase' = 'auto') => {
   return useQuery({
-    queryKey: ['songs'],
+    queryKey: ['songs', source],
     queryFn: async () => {
-      console.log('Fetching songs from Supabase...');
-      try {
-        const { data, error } = await supabase
-          .from('songs')
-          .select('*')
-          .order('listens', { ascending: false });
+      // When source is 'supabase' or 'auto', try Supabase first
+      if (source !== 'itunes') {
+        console.log('Fetching songs from Supabase...');
+        try {
+          const { data, error } = await supabase
+            .from('songs')
+            .select('*')
+            .order('listens', { ascending: false });
 
-        if (error) throw error;
-        if (data && data.length > 0) {
-          console.log('Successfully fetched songs:', data.length, 'songs');
-          return data as Song[];
+          if (error) throw error;
+          if (data && data.length > 0) {
+            console.log('Successfully fetched songs:', data.length, 'songs');
+            return data as Song[];
+          }
+          if (source === 'supabase') {
+            console.warn('Supabase returned no songs.');
+            return [];
+          }
+        } catch (err) {
+          if (source === 'supabase') {
+            console.error('Supabase fetch failed:', err);
+            throw err;
+          }
+          console.warn('Supabase fetch failed or returned no data. Falling back to iTunes sample songs.', err);
         }
-      } catch (err) {
-        console.warn('Supabase fetch failed or returned no data. Falling back to iTunes sample songs.', err);
       }
 
-      // Fallback: Fetch ~50 Indian songs with legal 30s previews from iTunes Search API
+      // Fetch ~50 Indian songs with legal 30s previews from iTunes Search API
       console.log('Fetching Indian sample songs from iTunes (previews)...');
 
       const languages = [

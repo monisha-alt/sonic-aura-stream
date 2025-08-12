@@ -15,7 +15,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 const MusicLibraryPage = () => {
   const [aiModeEnabled, setAiModeEnabled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: songs = [], isLoading, error } = useSongs();
+  const [source, setSource] = useState<'auto' | 'itunes' | 'supabase'>('auto');
+  const { data: songs = [], isLoading, error } = useSongs(source);
   const { favorites, toggleFavorite, isFavorited } = useFavorites();
   const {
     isPlaying,
@@ -102,14 +103,17 @@ const MusicLibraryPage = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Button variant="outline" onClick={() => toggleShuffle()}>
-                <ShuffleIcon className="mr-2 h-4 w-4" />
-                Shuffle
-              </Button>
-              <Button onClick={() => playPlaylist(filteredSongs, 0)} className="bg-purple-600 hover:bg-purple-700">
-                <Play className="mr-2 h-4 w-4" />
-                Play All
-              </Button>
+<Button variant="secondary" onClick={() => setSource('itunes')}>
+  Load iTunes Previews
+</Button>
+<Button variant="outline" onClick={() => toggleShuffle()}>
+  <ShuffleIcon className="mr-2 h-4 w-4" />
+  Shuffle
+</Button>
+<Button onClick={() => playPlaylist(filteredSongs, 0)} className="bg-purple-600 hover:bg-purple-700">
+  <Play className="mr-2 h-4 w-4" />
+  Play All
+</Button>
             </div>
             
             {filteredSongs.length > 0 ? (
