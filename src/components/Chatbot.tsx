@@ -202,7 +202,7 @@ const Chatbot = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
-          className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-50 rounded-full h-12 w-12"
+          className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[60] rounded-full h-12 w-12 shadow-lg"
           size="icon"
           variant="secondary"
         >
