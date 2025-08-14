@@ -310,11 +310,10 @@ const Chatbot = () => {
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button
-          className="fixed bottom-20 right-4 md:bottom-24 md:right-6 z-[60] rounded-full h-12 w-12 shadow-lg"
+          className="fixed bottom-6 right-6 z-[70] rounded-full h-16 w-16 shadow-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 border-2 border-white/20 animate-pulse"
           size="icon"
-          variant="secondary"
         >
-          <Bot className="h-6 w-6" />
+          <Bot className="h-8 w-8 text-white" />
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md flex flex-col h-[80vh] sm:h-full p-0">
