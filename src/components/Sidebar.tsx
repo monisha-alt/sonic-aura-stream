@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { 
   Home, 
@@ -15,17 +15,159 @@ import {
   Heart,
   Sparkles,
   LogOut,
-  User
+  User,
+  Bot,
+  Send,
+  X,
+  Mic,
+  MicOff,
+  Music
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useEmotionDetection, EmotionType } from "@/hooks/useEmotionDetection";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SidebarProps {
   aiModeEnabled: boolean;
   handleAiModeToggle: () => void;
 }
 
+type Message = {
+  id: string;
+  content: string;
+  isBot: boolean;
+};
+
 const Sidebar: React.FC<SidebarProps> = ({ aiModeEnabled, handleAiModeToggle }) => {
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const [input, setInput] = useState("");
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome-message",
+      content: "Hi! I'm your AI music assistant. How can I help?",
+      isBot: true,
+    },
+  ]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isRecognitionSupported, setIsRecognitionSupported] = useState(false);
+  const [voiceEmotionData, setVoiceEmotionData] = useState<{pitch: number, speed: number, volume: number} | null>(null);
+  const [isAnalyzingVoice, setIsAnalyzingVoice] = useState(false);
+  const { toast } = useToast();
+  
+  const {
+    detectedEmotion,
+    setDetectedEmotion,
+    detectEmotionFromText,
+    getSongRecommendationsForEmotion
+  } = useEmotionDetection();
+
+  // Helper functions for chatbot functionality
+  const handleSendMessage = () => {
+    if (!input.trim()) return;
+    
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      content: input,
+      isBot: false,
+    };
+    
+    setMessages((prev) => [...prev, userMessage]);
+    
+    const emotion = detectEmotionFromText(input);
+    setDetectedEmotion(emotion);
+    setInput("");
+    
+    const recommendations = getSongRecommendationsForEmotion(emotion);
+    
+    setTimeout(() => {
+      let botResponseContent = "";
+      
+      if (emotion) {
+        botResponseContent = `I sense you're feeling ${emotion}. `;
+        
+        if (recommendations.length > 0) {
+          botResponseContent += `Here are matching songs: `;
+          recommendations.forEach((song, index) => {
+            botResponseContent += `${index + 1}. "${song.title}" by ${song.artist}${index < recommendations.length - 1 ? ', ' : ''}`;
+          });
+        } else {
+          botResponseContent += `I'm still learning songs for this mood!`;
+        }
+      } else {
+        botResponseContent = `Tell me more about your mood and I'll find perfect songs!`;
+      }
+      
+      const botMessage = {
+        id: `bot-${Date.now()}`,
+        content: botResponseContent,
+        isBot: true,
+      };
+      
+      setMessages((prev) => [...prev, botMessage]);
+    }, 1000);
+  };
+
+  const toggleSpeechRecognition = () => {
+    if (isRecording) {
+      stopSpeechRecognition();
+    } else {
+      startSpeechRecognition();
+    }
+  };
+
+  const startSpeechRecognition = async () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    
+    if (SpeechRecognition) {
+      try {
+        setIsAnalyzingVoice(true);
+        
+        const recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        recognition.lang = 'en-US';
+        
+        recognition.onstart = () => {
+          setIsRecording(true);
+          setIsAnalyzingVoice(false);
+        };
+        
+        recognition.onresult = (event: any) => {
+          const transcript = event.results[0][0].transcript;
+          setInput(transcript);
+          
+          const textEmotion = detectEmotionFromText(transcript);
+          setDetectedEmotion(textEmotion);
+          
+          setTimeout(() => {
+            handleSendMessage();
+          }, 500);
+        };
+        
+        recognition.onerror = () => {
+          setIsRecording(false);
+          setIsAnalyzingVoice(false);
+        };
+        
+        recognition.onend = () => {
+          setIsRecording(false);
+        };
+        
+        recognition.start();
+      } catch (error) {
+        setIsAnalyzingVoice(false);
+      }
+    }
+  };
+
+  const stopSpeechRecognition = () => {
+    setIsRecording(false);
+    setIsAnalyzingVoice(false);
+  };
 
   return (
     <aside className="w-full md:w-64 bg-gray-900 text-gray-100 p-4 flex flex-col h-full">
@@ -163,6 +305,81 @@ const Sidebar: React.FC<SidebarProps> = ({ aiModeEnabled, handleAiModeToggle }) 
             <Settings className="h-5 w-5" />
             <span>Settings</span>
           </NavLink>
+          
+          {/* AI Chatbot Section */}
+          <div className="mt-4 pt-4 border-t border-gray-800">
+            <Button
+              onClick={() => setChatExpanded(!chatExpanded)}
+              className="flex items-center space-x-3 px-4 py-2 rounded-md transition-colors w-full justify-start hover:bg-gray-800 hover:text-purple-400 bg-transparent"
+              variant="ghost"
+            >
+              <Bot className="h-5 w-5" />
+              <span>AI Assistant</span>
+              {detectedEmotion && (
+                <Badge variant="outline" className="text-xs ml-auto">
+                  {detectedEmotion}
+                </Badge>
+              )}
+            </Button>
+            
+            {chatExpanded && (
+              <div className="mt-2 p-3 bg-gray-800 rounded-md">
+                <ScrollArea className="h-48 mb-3">
+                  <div className="space-y-2">
+                    {messages.map((msg) => (
+                      <div
+                        key={msg.id}
+                        className={`text-xs p-2 rounded ${
+                          msg.isBot
+                            ? "bg-gray-700 text-gray-100"
+                            : "bg-purple-600 text-white ml-4"
+                        }`}
+                      >
+                        {msg.content}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                
+                {voiceEmotionData && (
+                  <div className="flex gap-1 text-xs text-gray-400 mb-2">
+                    <span>🎵{Math.round(voiceEmotionData.pitch)}Hz</span>
+                    <span>🔊{Math.round(voiceEmotionData.volume)}%</span>
+                  </div>
+                )}
+                
+                <div className="flex gap-1">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask me about music..."
+                    className="text-xs h-8"
+                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  />
+                  <Button 
+                    onClick={toggleSpeechRecognition} 
+                    variant={isRecording || isAnalyzingVoice ? "destructive" : "outline"}
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    disabled={isAnalyzingVoice}
+                  >
+                    {isAnalyzingVoice ? (
+                      <div className="animate-pulse">
+                        <Music className="h-3 w-3" />
+                      </div>
+                    ) : isRecording ? (
+                      <MicOff className="h-3 w-3" />
+                    ) : (
+                      <Mic className="h-3 w-3" />
+                    )}
+                  </Button>
+                  <Button onClick={handleSendMessage} size="sm" className="h-8 w-8 p-0">
+                    <Send className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 

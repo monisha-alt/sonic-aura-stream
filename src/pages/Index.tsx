@@ -157,7 +157,6 @@ const Index = () => {
         </div>
       </div>
 
-      <Chatbot />
 
       <AudioPlayerControls
         isPlaying={isPlaying}
