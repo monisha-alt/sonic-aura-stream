@@ -50,7 +50,7 @@ const Chatbot = () => {
   } = useEmotionDetection();
   
   const { playPlaylist } = useAudioPlayer();
-  const { data: availableSongs = [] } = useSongs('itunes');
+  const { data: availableSongs = [], isLoading: songsLoading } = useSongs('itunes'); // Force iTunes
 
   // Check if SpeechRecognition is supported
   useEffect(() => {
@@ -262,26 +262,37 @@ const Chatbot = () => {
         
         // Immediately play music based on voice emotion detection
         if (voiceEmotion && availableSongs.length > 0) {
+          console.log('Voice emotion detected:', voiceEmotion);
+          console.log('Available iTunes songs:', availableSongs.length);
+          
           const emotionToMoodMap: { [key in EmotionType]: string[] } = {
-            happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
-            sad: ["Sad", "Melancholy", "Emotional", "Dark"],
-            energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
-            calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
-            angry: ["Intense", "Dark", "Aggressive", "Heavy"],
-            romantic: ["Romantic", "Love", "Tender", "Sweet"],
-            nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
+            happy: ["happy", "romantic", "energetic"],
+            sad: ["sad", "melancholy", "calm"],
+            energetic: ["energetic", "dance", "happy"],
+            calm: ["calm", "ambient", "romantic"],
+            angry: ["energetic", "sad"],
+            romantic: ["romantic", "happy", "calm"],
+            nostalgic: ["calm", "romantic", "sad"]
           };
           
           const targetMoods = emotionToMoodMap[voiceEmotion];
-          const matchingSongs = availableSongs.filter(song => 
-            song.mood && song.mood.some(mood => 
+          console.log('Target moods for', voiceEmotion, ':', targetMoods);
+          
+          // Filter iTunes songs by mood
+          const matchingSongs = availableSongs.filter(song => {
+            const songMoods = song.mood || [];
+            const matches = songMoods.some(mood => 
               targetMoods.some(targetMood => 
                 mood.toLowerCase().includes(targetMood.toLowerCase())
               )
-            )
-          );
+            );
+            return matches;
+          });
+          
+          console.log('Matching songs found:', matchingSongs.length);
           
           if (matchingSongs.length > 0) {
+            console.log('Playing iTunes songs:', matchingSongs.slice(0, 5).map(s => s.title));
             playPlaylist(matchingSongs, 0);
             toast({
               title: `🎵 Voice Detected: ${voiceEmotion}`,
@@ -297,14 +308,30 @@ const Chatbot = () => {
             };
             setMessages((prev) => [...prev, botMessage]);
           } else {
-            // Play random iTunes songs as fallback
-            playPlaylist(availableSongs.slice(0, 5), 0);
+            // Play first 5 iTunes songs as fallback
+            console.log('No matching songs, playing first 5 iTunes songs');
+            const fallbackSongs = availableSongs.slice(0, 5);
+            playPlaylist(fallbackSongs, 0);
             toast({
               title: `🎵 Voice Detected: ${voiceEmotion}`,
-              description: "Playing iTunes songs based on your voice emotion",
+              description: `Playing ${fallbackSongs.length} iTunes songs based on your voice emotion`,
               duration: 3000,
             });
+            
+            const botMessage = {
+              id: `bot-${Date.now()}`,
+              content: `🎵 I detected ${voiceEmotion} emotion from your voice! Playing iTunes songs for you.`,
+              isBot: true,
+            };
+            setMessages((prev) => [...prev, botMessage]);
           }
+        } else if (voiceEmotion) {
+          console.log('Voice emotion detected but no songs available yet');
+          toast({
+            title: `Voice Detected: ${voiceEmotion}`,
+            description: "Loading iTunes songs...",
+            duration: 2000,
+          });
         }
         
         recognitionRef.current = new SpeechRecognition();
