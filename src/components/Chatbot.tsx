@@ -260,6 +260,53 @@ const Chatbot = () => {
         const voiceEmotion = detectEmotionFromVoice(voiceData);
         setDetectedEmotion(voiceEmotion);
         
+        // Immediately play music based on voice emotion detection
+        if (voiceEmotion && availableSongs.length > 0) {
+          const emotionToMoodMap: { [key in EmotionType]: string[] } = {
+            happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
+            sad: ["Sad", "Melancholy", "Emotional", "Dark"],
+            energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
+            calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
+            angry: ["Intense", "Dark", "Aggressive", "Heavy"],
+            romantic: ["Romantic", "Love", "Tender", "Sweet"],
+            nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
+          };
+          
+          const targetMoods = emotionToMoodMap[voiceEmotion];
+          const matchingSongs = availableSongs.filter(song => 
+            song.mood && song.mood.some(mood => 
+              targetMoods.some(targetMood => 
+                mood.toLowerCase().includes(targetMood.toLowerCase())
+              )
+            )
+          );
+          
+          if (matchingSongs.length > 0) {
+            playPlaylist(matchingSongs, 0);
+            toast({
+              title: `🎵 Voice Detected: ${voiceEmotion}`,
+              description: `Auto-playing ${matchingSongs.length} iTunes songs for your mood`,
+              duration: 4000,
+            });
+            
+            // Add bot message about auto-playing music
+            const botMessage = {
+              id: `bot-${Date.now()}`,
+              content: `🎵 I detected ${voiceEmotion} emotion from your voice! Now playing ${matchingSongs.length} iTunes songs that match your mood. No need to say anything - I can hear your feelings!`,
+              isBot: true,
+            };
+            setMessages((prev) => [...prev, botMessage]);
+          } else {
+            // Play random iTunes songs as fallback
+            playPlaylist(availableSongs.slice(0, 5), 0);
+            toast({
+              title: `🎵 Voice Detected: ${voiceEmotion}`,
+              description: "Playing iTunes songs based on your voice emotion",
+              duration: 3000,
+            });
+          }
+        }
+        
         recognitionRef.current = new SpeechRecognition();
         const recognition = recognitionRef.current;
         
@@ -271,8 +318,8 @@ const Chatbot = () => {
           setIsRecording(true);
           setIsAnalyzingVoice(false);
           toast({
-            title: `Voice emotion detected: ${voiceEmotion}`,
-            description: "Now listening for your message...",
+            title: `Voice Emotion: ${voiceEmotion} 🎵`,
+            description: "Music already started! Speak if you want to add text commands...",
             duration: 3000,
           });
         };
@@ -281,53 +328,16 @@ const Chatbot = () => {
           const transcript = event.results[0][0].transcript;
           setInput(transcript);
           
-          // Combine voice emotion with text emotion for better accuracy
+          // Text is optional - voice emotion already triggered music
           const textEmotion = detectEmotionFromText(transcript);
-          const finalEmotion = detectedEmotion || textEmotion;
           
-          if (finalEmotion !== detectedEmotion) {
-            setDetectedEmotion(finalEmotion);
-          }
-          
-          // Play music immediately based on detected emotion
-          if (finalEmotion && availableSongs.length > 0) {
-            const emotionToMoodMap: { [key in EmotionType]: string[] } = {
-              happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
-              sad: ["Sad", "Melancholy", "Emotional", "Dark"],
-              energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
-              calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
-              angry: ["Intense", "Dark", "Aggressive", "Heavy"],
-              romantic: ["Romantic", "Love", "Tender", "Sweet"],
-              nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
-            };
-            
-            const targetMoods = emotionToMoodMap[finalEmotion];
-            const matchingSongs = availableSongs.filter(song => 
-              song.mood && song.mood.some(mood => 
-                targetMoods.some(targetMood => 
-                  mood.toLowerCase().includes(targetMood.toLowerCase())
-                )
-              )
-            );
-            
-            if (matchingSongs.length > 0) {
-              playPlaylist(matchingSongs, 0);
-              toast({
-                title: `🎵 Auto-Playing ${finalEmotion} Music`,
-                description: `Started playlist with ${matchingSongs.length} songs`,
-                duration: 3000,
-              });
-            }
-          }
-          
-          // Display comprehensive emotion feedback
           toast({
-            title: "Voice Analysis Complete",
-            description: `Voice: ${detectedEmotion} | Text: ${textEmotion || 'neutral'} | Playing: ${finalEmotion} music`,
-            duration: 4000,
+            title: "Voice + Text Analysis",
+            description: `Primary emotion (${detectedEmotion}) already playing music. Text adds: ${textEmotion || 'no additional emotion'}`,
+            duration: 3000,
           });
           
-          // Auto-send after a brief delay
+          // Auto-send the text message for chat history
           setTimeout(() => {
             handleSendMessage();
           }, 800);
