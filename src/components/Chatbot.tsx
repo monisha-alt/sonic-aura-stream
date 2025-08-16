@@ -14,6 +14,8 @@ import {
 import { songs } from "@/data";
 import { useEmotionDetection, EmotionType } from "@/hooks/useEmotionDetection";
 import { Badge } from "@/components/ui/badge";
+import { useAudioPlayer } from "@/hooks/useAudioPlayer";
+import { useSongs } from "@/hooks/useSongs";
 
 type Message = {
   id: string;
@@ -46,6 +48,9 @@ const Chatbot = () => {
     detectEmotionFromText,
     getSongRecommendationsForEmotion
   } = useEmotionDetection();
+  
+  const { playPlaylist } = useAudioPlayer();
+  const { data: availableSongs = [] } = useSongs('itunes');
 
   // Check if SpeechRecognition is supported
   useEffect(() => {
@@ -73,26 +78,56 @@ const Chatbot = () => {
     setDetectedEmotion(emotion);
     setInput("");
     
-    // Generate recommendations based on detected emotion
+    // Generate recommendations and play music based on detected emotion
     const recommendations = getSongRecommendationsForEmotion(emotion);
+    
+    // Filter available songs for the detected emotion
+    const emotionToMoodMap: { [key in EmotionType]: string[] } = {
+      happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
+      sad: ["Sad", "Melancholy", "Emotional", "Dark"],
+      energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
+      calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
+      angry: ["Intense", "Dark", "Aggressive", "Heavy"],
+      romantic: ["Romantic", "Love", "Tender", "Sweet"],
+      nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
+    };
     
     // Prepare bot response
     setTimeout(() => {
       let botResponseContent = "";
       
-      if (emotion) {
-        botResponseContent = `I sense that you're feeling ${emotion.toLowerCase()}. `;
+      if (emotion && availableSongs.length > 0) {
+        const targetMoods = emotionToMoodMap[emotion];
         
-        if (recommendations.length > 0) {
-          botResponseContent += `Here are some songs that match your mood:\n\n`;
-          recommendations.forEach((song, index) => {
-            botResponseContent += `${index + 1}. "${song.title}" by ${song.artist}\n`;
+        // Filter songs that match the emotion
+        const matchingSongs = availableSongs.filter(song => 
+          song.mood && song.mood.some(mood => 
+            targetMoods.some(targetMood => 
+              mood.toLowerCase().includes(targetMood.toLowerCase())
+            )
+          )
+        );
+        
+        if (matchingSongs.length > 0) {
+          // Play the matching songs
+          playPlaylist(matchingSongs, 0);
+          
+          botResponseContent = `🎵 Playing ${emotion} music! I've started a playlist with ${matchingSongs.length} songs that match your ${emotion} mood. Enjoy!`;
+          
+          toast({
+            title: `🎵 Now Playing`,
+            description: `Started ${emotion} playlist with ${matchingSongs.length} songs`,
+            duration: 4000,
           });
         } else {
-          botResponseContent += `I don't have specific song recommendations for this mood right now, but I'm learning more every day!`;
+          botResponseContent = `I sense you're feeling ${emotion}, but I couldn't find songs matching that mood. Let me play some general music for you.`;
+          // Play first few available songs as fallback
+          playPlaylist(availableSongs.slice(0, 5), 0);
         }
+      } else if (emotion) {
+        botResponseContent = `I sense that you're feeling ${emotion}, but I'm having trouble loading songs right now. Try again in a moment!`;
       } else {
-        botResponseContent = `I'm not sure what mood you're in. Could you share more about how you're feeling?`;
+        botResponseContent = `I'm not sure what mood you're in. Could you share more about how you're feeling? I can play music that matches your emotions!`;
       }
       
       const botMessage = {
@@ -254,10 +289,41 @@ const Chatbot = () => {
             setDetectedEmotion(finalEmotion);
           }
           
+          // Play music immediately based on detected emotion
+          if (finalEmotion && availableSongs.length > 0) {
+            const emotionToMoodMap: { [key in EmotionType]: string[] } = {
+              happy: ["Happy", "Upbeat", "Energetic", "Feel-good"],
+              sad: ["Sad", "Melancholy", "Emotional", "Dark"],
+              energetic: ["Energetic", "Dance", "Upbeat", "High-energy"],
+              calm: ["Relaxed", "Chill", "Peaceful", "Ambient"],
+              angry: ["Intense", "Dark", "Aggressive", "Heavy"],
+              romantic: ["Romantic", "Love", "Tender", "Sweet"],
+              nostalgic: ["Nostalgic", "Classic", "Vintage", "Retro"]
+            };
+            
+            const targetMoods = emotionToMoodMap[finalEmotion];
+            const matchingSongs = availableSongs.filter(song => 
+              song.mood && song.mood.some(mood => 
+                targetMoods.some(targetMood => 
+                  mood.toLowerCase().includes(targetMood.toLowerCase())
+                )
+              )
+            );
+            
+            if (matchingSongs.length > 0) {
+              playPlaylist(matchingSongs, 0);
+              toast({
+                title: `🎵 Auto-Playing ${finalEmotion} Music`,
+                description: `Started playlist with ${matchingSongs.length} songs`,
+                duration: 3000,
+              });
+            }
+          }
+          
           // Display comprehensive emotion feedback
           toast({
-            title: "Complete Analysis",
-            description: `Voice: ${detectedEmotion} | Text: ${textEmotion || 'neutral'} | Final: ${finalEmotion}`,
+            title: "Voice Analysis Complete",
+            description: `Voice: ${detectedEmotion} | Text: ${textEmotion || 'neutral'} | Playing: ${finalEmotion} music`,
             duration: 4000,
           });
           
