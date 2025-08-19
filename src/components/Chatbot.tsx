@@ -50,7 +50,14 @@ const Chatbot = () => {
   } = useEmotionDetection();
   
   const { playPlaylist } = useAudioPlayer();
-  const { data: availableSongs = [], isLoading: songsLoading } = useSongs('itunes'); // Force iTunes only
+  const { data: availableSongs = [], isLoading: songsLoading } = useSongs();
+  
+  // State for recommended songs display
+  const [recommendedSongs, setRecommendedSongs] = useState<any[]>([]);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  
+  // Use all available songs with audio source
+  const playableSongs = availableSongs.filter(song => song.audio_url);
   
   // Auto-contextual state
   const [contextualData, setContextualData] = useState<{
@@ -329,9 +336,9 @@ const Chatbot = () => {
         setDetectedEmotion(voiceEmotion);
         
         // Immediately play music based on voice emotion + contextual data
-        if (voiceEmotion && availableSongs.length > 0) {
+        if (voiceEmotion && playableSongs.length > 0) {
           console.log('Voice emotion detected:', voiceEmotion);
-          console.log('Available iTunes songs:', availableSongs.length);
+          console.log('Available playable songs:', playableSongs.length);
           console.log('Contextual data:', contextualData);
           
           // Enhanced emotion mapping with contextual influence
@@ -371,8 +378,8 @@ const Chatbot = () => {
           const targetMoods = emotionToMoodMap[voiceEmotion];
           console.log('Enhanced target moods for', voiceEmotion, 'with context:', targetMoods);
           
-          // Filter iTunes songs by enhanced mood mapping
-          const matchingSongs = availableSongs.filter(song => {
+          // Filter songs by enhanced mood mapping
+          const matchingSongs = playableSongs.filter(song => {
             const songMoods = song.mood || [];
             const matches = songMoods.some(mood => 
               targetMoods.some(targetMood => 
@@ -382,10 +389,14 @@ const Chatbot = () => {
             return matches;
           });
           
+          // Display recommended songs as album-style list
+          setRecommendedSongs(matchingSongs.slice(0, 8));
+          setShowRecommendations(true);
+          
           console.log('Matching contextual songs found:', matchingSongs.length);
           
           if (matchingSongs.length > 0) {
-            console.log('Auto-playing iTunes songs:', matchingSongs.slice(0, 8).map(s => s.title));
+            console.log('Auto-playing songs:', matchingSongs.slice(0, 8).map(s => s.title));
             playPlaylist(matchingSongs, 0);
             
             const contextInfo = contextualData ? 
@@ -393,31 +404,33 @@ const Chatbot = () => {
             
             toast({
               title: `🎵 ${voiceEmotion} + Auto Context`,
-              description: `Playing ${matchingSongs.length} iTunes songs for ${contextInfo}`,
+              description: `Playing ${matchingSongs.length} songs for ${contextInfo}`,
               duration: 4000,
             });
             
             // Add bot message about contextual auto-playing music
             const botMessage = {
               id: `bot-${Date.now()}`,
-              content: `🎵 Detected ${voiceEmotion} emotion from your voice! Auto-detected ${contextInfo} and playing ${matchingSongs.length} perfect iTunes songs. Fully automatic - no input needed!`,
+              content: `🎵 Detected ${voiceEmotion} emotion from your voice! Auto-detected ${contextInfo} and playing ${matchingSongs.length} perfect songs. Fully automatic - no input needed!`,
               isBot: true,
             };
             setMessages((prev) => [...prev, botMessage]);
           } else {
-            // Play first 8 iTunes songs as fallback
-            console.log('No contextual matches, playing first 8 iTunes songs');
-            const fallbackSongs = availableSongs.slice(0, 8);
+            // Play first 8 songs as fallback
+            console.log('No contextual matches, playing first 8 songs');
+            const fallbackSongs = playableSongs.slice(0, 8);
+            setRecommendedSongs(fallbackSongs);
+            setShowRecommendations(true);
             playPlaylist(fallbackSongs, 0);
             toast({
               title: `🎵 ${voiceEmotion} + Auto Context`,
-              description: `Playing ${fallbackSongs.length} iTunes songs with auto-context`,
+              description: `Playing ${fallbackSongs.length} songs with auto-context`,
               duration: 3000,
             });
             
             const botMessage = {
               id: `bot-${Date.now()}`,
-              content: `🎵 Detected ${voiceEmotion} from your voice with auto-context! Playing iTunes songs for you.`,
+              content: `🎵 Detected ${voiceEmotion} from your voice with auto-context! Playing songs for you.`,
               isBot: true,
             };
             setMessages((prev) => [...prev, botMessage]);
@@ -507,8 +520,96 @@ const Chatbot = () => {
   };
 
   return (
-    // Chatbot is now integrated into the sidebar
-    <></>
+    <div className="space-y-4">
+      {/* Voice Recognition Button */}
+      <div className="flex items-center justify-center p-4">
+        <Button
+          onClick={toggleSpeechRecognition}
+          variant={isRecording ? "destructive" : "default"}
+          size="lg"
+          className="relative"
+          disabled={isAnalyzingVoice}
+        >
+          {isAnalyzingVoice ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+              Analyzing Voice...
+            </>
+          ) : isRecording ? (
+            <>
+              <MicOff className="h-4 w-4 mr-2" />
+              Stop Recording
+            </>
+          ) : (
+            <>
+              <Mic className="h-4 w-4 mr-2" />
+              Detect Emotion & Play
+            </>
+          )}
+        </Button>
+      </div>
+
+      {/* Detected Emotion Badge */}
+      {detectedEmotion && (
+        <div className="flex justify-center">
+          <Badge variant="secondary" className="capitalize">
+            🎵 {detectedEmotion} emotion detected
+          </Badge>
+        </div>
+      )}
+
+      {/* Contextual Info */}
+      {contextualData && (
+        <div className="text-sm text-muted-foreground text-center">
+          <Music className="inline h-4 w-4 mr-1" />
+          Auto-context: {contextualData.weather}, {contextualData.timeOfDay}
+        </div>
+      )}
+
+      {/* Recommended Songs Album View */}
+      {showRecommendations && recommendedSongs.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-center">
+            🎵 Playing {detectedEmotion} Music
+          </h3>
+          <div className="grid grid-cols-2 gap-3 max-h-96 overflow-y-auto">
+            {recommendedSongs.map((song, index) => (
+              <div 
+                key={song.id || index}
+                className="flex items-center space-x-3 p-2 rounded-lg bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
+                onClick={() => playPlaylist(recommendedSongs, index)}
+              >
+                <div className="w-12 h-12 rounded-md bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center flex-shrink-0">
+                  <Music className="h-5 w-5 text-primary" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{song.title}</p>
+                  <p className="text-xs text-muted-foreground truncate">{song.artist}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setShowRecommendations(false)}
+            >
+              Hide Recommendations
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Voice Emotion Data Debug (hidden in production) */}
+      {voiceEmotionData && process.env.NODE_ENV === 'development' && (
+        <div className="text-xs text-muted-foreground p-2 bg-muted/20 rounded">
+          Voice Analysis: Pitch {voiceEmotionData.pitch.toFixed(0)}Hz, 
+          Volume {voiceEmotionData.volume.toFixed(0)}, 
+          Speed {voiceEmotionData.speed.toFixed(0)}
+        </div>
+      )}
+    </div>
   );
 };
 
