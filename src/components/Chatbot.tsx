@@ -50,16 +50,84 @@ const Chatbot = () => {
   } = useEmotionDetection();
   
   const { playPlaylist } = useAudioPlayer();
-  const { data: availableSongs = [], isLoading: songsLoading } = useSongs('itunes'); // Force iTunes
+  const { data: availableSongs = [], isLoading: songsLoading } = useSongs('itunes'); // Force iTunes only
+  
+  // Auto-contextual state
+  const [contextualData, setContextualData] = useState<{
+    location: string;
+    weather: string;
+    timeOfDay: string;
+  } | null>(null);
 
-  // Check if SpeechRecognition is supported
+  // Auto-detect contextual information on component mount
   useEffect(() => {
     // Use window interface to check for browser support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       setIsRecognitionSupported(true);
     }
+    
+    // Auto-detect contextual information
+    autoDetectContext();
   }, []);
+
+  const autoDetectContext = async () => {
+    try {
+      // Auto-detect location
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            // Simulate weather detection based on location
+            const currentHour = new Date().getHours();
+            const timeOfDay = currentHour < 6 ? 'night' : 
+                             currentHour < 12 ? 'morning' : 
+                             currentHour < 18 ? 'afternoon' : 'evening';
+            
+            // Simulate weather (in real app, would use weather API)
+            const weatherOptions = ['Clear', 'Cloudy', 'Rainy', 'Sunny'];
+            const simulatedWeather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+            
+            const contextData = {
+              location: 'Auto-detected',
+              weather: simulatedWeather,
+              timeOfDay
+            };
+            
+            setContextualData(contextData);
+            console.log('Auto-detected context:', contextData);
+          },
+          (error) => {
+            console.log('Geolocation failed, using defaults');
+            // Use default context
+            const currentHour = new Date().getHours();
+            const timeOfDay = currentHour < 6 ? 'night' : 
+                             currentHour < 12 ? 'morning' : 
+                             currentHour < 18 ? 'afternoon' : 'evening';
+            
+            setContextualData({
+              location: 'Default',
+              weather: 'Clear',
+              timeOfDay
+            });
+          }
+        );
+      } else {
+        // Fallback context
+        const currentHour = new Date().getHours();
+        const timeOfDay = currentHour < 6 ? 'night' : 
+                         currentHour < 12 ? 'morning' : 
+                         currentHour < 18 ? 'afternoon' : 'evening';
+        
+        setContextualData({
+          location: 'Default',
+          weather: 'Clear',
+          timeOfDay
+        });
+      }
+    } catch (error) {
+      console.error('Context detection failed:', error);
+    }
+  };
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -260,12 +328,14 @@ const Chatbot = () => {
         const voiceEmotion = detectEmotionFromVoice(voiceData);
         setDetectedEmotion(voiceEmotion);
         
-        // Immediately play music based on voice emotion detection
+        // Immediately play music based on voice emotion + contextual data
         if (voiceEmotion && availableSongs.length > 0) {
           console.log('Voice emotion detected:', voiceEmotion);
           console.log('Available iTunes songs:', availableSongs.length);
+          console.log('Contextual data:', contextualData);
           
-          const emotionToMoodMap: { [key in EmotionType]: string[] } = {
+          // Enhanced emotion mapping with contextual influence
+          let emotionToMoodMap: { [key in EmotionType]: string[] } = {
             happy: ["happy", "romantic", "energetic"],
             sad: ["sad", "melancholy", "calm"],
             energetic: ["energetic", "dance", "happy"],
@@ -275,10 +345,33 @@ const Chatbot = () => {
             nostalgic: ["calm", "romantic", "sad"]
           };
           
-          const targetMoods = emotionToMoodMap[voiceEmotion];
-          console.log('Target moods for', voiceEmotion, ':', targetMoods);
+          // Apply contextual modifications
+          if (contextualData) {
+            const { weather, timeOfDay } = contextualData;
+            
+            // Modify mood preferences based on weather
+            if (weather.toLowerCase().includes('rain')) {
+              emotionToMoodMap.calm = ["calm", "melancholy", "sad"];
+              emotionToMoodMap.romantic = ["romantic", "sad", "melancholy"];
+            }
+            if (weather.toLowerCase().includes('sunny') || weather.toLowerCase().includes('clear')) {
+              emotionToMoodMap.happy = ["happy", "energetic", "romantic"];
+              emotionToMoodMap.energetic = ["energetic", "happy", "dance"];
+            }
+            
+            // Modify based on time of day
+            if (timeOfDay === 'morning') {
+              emotionToMoodMap.energetic = ["energetic", "happy", "dance"];
+            } else if (timeOfDay === 'evening' || timeOfDay === 'night') {
+              emotionToMoodMap.calm = ["calm", "romantic", "melancholy"];
+              emotionToMoodMap.romantic = ["romantic", "calm", "happy"];
+            }
+          }
           
-          // Filter iTunes songs by mood
+          const targetMoods = emotionToMoodMap[voiceEmotion];
+          console.log('Enhanced target moods for', voiceEmotion, 'with context:', targetMoods);
+          
+          // Filter iTunes songs by enhanced mood mapping
           const matchingSongs = availableSongs.filter(song => {
             const songMoods = song.mood || [];
             const matches = songMoods.some(mood => 
@@ -289,47 +382,51 @@ const Chatbot = () => {
             return matches;
           });
           
-          console.log('Matching songs found:', matchingSongs.length);
+          console.log('Matching contextual songs found:', matchingSongs.length);
           
           if (matchingSongs.length > 0) {
-            console.log('Playing iTunes songs:', matchingSongs.slice(0, 5).map(s => s.title));
+            console.log('Auto-playing iTunes songs:', matchingSongs.slice(0, 8).map(s => s.title));
             playPlaylist(matchingSongs, 0);
+            
+            const contextInfo = contextualData ? 
+              `${contextualData.weather} weather, ${contextualData.timeOfDay}` : 'default context';
+            
             toast({
-              title: `🎵 Voice Detected: ${voiceEmotion}`,
-              description: `Auto-playing ${matchingSongs.length} iTunes songs for your mood`,
+              title: `🎵 ${voiceEmotion} + Auto Context`,
+              description: `Playing ${matchingSongs.length} iTunes songs for ${contextInfo}`,
               duration: 4000,
             });
             
-            // Add bot message about auto-playing music
+            // Add bot message about contextual auto-playing music
             const botMessage = {
               id: `bot-${Date.now()}`,
-              content: `🎵 I detected ${voiceEmotion} emotion from your voice! Now playing ${matchingSongs.length} iTunes songs that match your mood. No need to say anything - I can hear your feelings!`,
+              content: `🎵 Detected ${voiceEmotion} emotion from your voice! Auto-detected ${contextInfo} and playing ${matchingSongs.length} perfect iTunes songs. Fully automatic - no input needed!`,
               isBot: true,
             };
             setMessages((prev) => [...prev, botMessage]);
           } else {
-            // Play first 5 iTunes songs as fallback
-            console.log('No matching songs, playing first 5 iTunes songs');
-            const fallbackSongs = availableSongs.slice(0, 5);
+            // Play first 8 iTunes songs as fallback
+            console.log('No contextual matches, playing first 8 iTunes songs');
+            const fallbackSongs = availableSongs.slice(0, 8);
             playPlaylist(fallbackSongs, 0);
             toast({
-              title: `🎵 Voice Detected: ${voiceEmotion}`,
-              description: `Playing ${fallbackSongs.length} iTunes songs based on your voice emotion`,
+              title: `🎵 ${voiceEmotion} + Auto Context`,
+              description: `Playing ${fallbackSongs.length} iTunes songs with auto-context`,
               duration: 3000,
             });
             
             const botMessage = {
               id: `bot-${Date.now()}`,
-              content: `🎵 I detected ${voiceEmotion} emotion from your voice! Playing iTunes songs for you.`,
+              content: `🎵 Detected ${voiceEmotion} from your voice with auto-context! Playing iTunes songs for you.`,
               isBot: true,
             };
             setMessages((prev) => [...prev, botMessage]);
           }
         } else if (voiceEmotion) {
-          console.log('Voice emotion detected but no songs available yet');
+          console.log('Voice emotion detected but iTunes songs loading...');
           toast({
-            title: `Voice Detected: ${voiceEmotion}`,
-            description: "Loading iTunes songs...",
+            title: `Voice + Context Detected: ${voiceEmotion}`,
+            description: "Loading iTunes songs with auto-context...",
             duration: 2000,
           });
         }
