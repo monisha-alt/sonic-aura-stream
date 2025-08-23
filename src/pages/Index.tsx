@@ -121,40 +121,85 @@ const Index = () => {
   } : null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="flex flex-col md:flex-row">
+      <div className="flex">
         <Sidebar 
           aiModeEnabled={aiModeEnabled}
           handleAiModeToggle={handleAiModeToggle}
         />
 
-        <div className="flex-1 p-4 pb-24">
-          <h2 className="text-2xl font-bold mb-6">Your AI-Powered Recommendations</h2>
-          <p className="text-sm text-gray-400 mb-4">Found {songs.length} songs in your library</p>
-          
-          {displayCurrentSong && <CurrentSongDisplay currentSong={displayCurrentSong} />}
-          
-          <RecommendedSongs 
-            songs={recommendedSongs.map(song => ({
-              id: song.id,
-              title: song.title,
-              artist: song.artist,
-              album: song.album || '',
-              duration: song.duration ? `${Math.floor(song.duration / 60)}:${(song.duration % 60).toString().padStart(2, '0')}` : '0:00',
-              cover: song.cover_url || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop',
-              releaseYear: song.release_year || 2023,
-              genre: song.genre || [],
-              language: song.language || 'English',
-              mood: song.mood || [],
-              listens: song.listens || 0,
-              onPlay: () => handleSongPlay(song)
-            }))} 
-          />
-          
-          <MoodGenerator />
-        </div>
+        <main className="flex-1 overflow-auto">
+          {/* Hero Section */}
+          <section className="relative bg-gradient-to-br from-primary/20 via-background to-accent/10 p-8">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col lg:flex-row items-center gap-8">
+                <div className="flex-1 space-y-4">
+                  <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    Your Music, Reimagined
+                  </h1>
+                  <p className="text-lg text-muted-foreground max-w-2xl">
+                    Discover your perfect soundtrack with AI-powered recommendations tailored to your mood, time, and location.
+                  </p>
+                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-primary rounded-full"></div>
+                      {songs.length} songs in your library
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-accent rounded-full"></div>
+                      AI-powered recommendations
+                    </span>
+                  </div>
+                </div>
+                
+                {displayCurrentSong && (
+                  <div className="lg:w-96">
+                    <CurrentSongDisplay currentSong={displayCurrentSong} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Main Content */}
+          <section className="p-8">
+            <div className="max-w-7xl mx-auto space-y-12">
+              {/* Recommended Songs Section */}
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h2 className="text-3xl font-bold text-foreground">Made for You</h2>
+                    <p className="text-muted-foreground">Personalized recommendations based on your taste</p>
+                  </div>
+                </div>
+                <RecommendedSongs 
+                  songs={recommendedSongs.map(song => ({
+                    id: song.id,
+                    title: song.title,
+                    artist: song.artist,
+                    album: song.album || '',
+                    duration: song.duration ? `${Math.floor(song.duration / 60)}:${(song.duration % 60).toString().padStart(2, '0')}` : '0:00',
+                    cover: song.cover_url || 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop',
+                    releaseYear: song.release_year || 2023,
+                    genre: song.genre || [],
+                    language: song.language || 'English',
+                    mood: song.mood || [],
+                    listens: song.listens || 0,
+                    onPlay: () => handleSongPlay(song)
+                  }))} 
+                />
+              </div>
+
+              {/* Mood Generator Section */}
+              <div>
+                <h2 className="text-3xl font-bold text-foreground mb-6">Discover by Mood</h2>
+                <MoodGenerator />
+              </div>
+            </div>
+          </section>
+        </main>
       </div>
 
 

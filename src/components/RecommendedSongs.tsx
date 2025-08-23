@@ -24,39 +24,46 @@ interface RecommendedSongsProps {
 
 const RecommendedSongs = ({ songs }: RecommendedSongsProps) => {
   return (
-    <div>
-      <h3 className="text-xl font-semibold mb-4">Recommended Based on Your Taste</h3>
-      <div className="space-y-2">
-        {songs.map((song) => (
-          <div
-            key={song.id}
-            className="flex justify-between items-center p-3 rounded-md hover:bg-gray-800 transition-colors"
-          >
-            <div className="flex items-center">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {songs.map((song) => (
+        <div
+          key={song.id}
+          className="group relative bg-card rounded-lg p-4 hover:bg-muted/50 transition-all duration-300 border border-border/50"
+        >
+          <div className="flex items-start gap-3">
+            <div className="relative flex-shrink-0">
               <img 
                 src={song.cover} 
                 alt={`${song.title} cover`}
-                className="w-10 h-10 rounded mr-3 object-cover"
+                className="w-16 h-16 rounded-lg object-cover"
               />
-              <div>
-                <p className="font-medium">{song.title}</p>
-                <p className="text-sm text-gray-400">{song.artist}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-400">{song.duration}</span>
               <Button 
                 size="sm" 
-                variant="ghost"
+                variant="secondary"
                 onClick={song.onPlay}
-                className="hover:bg-purple-600"
+                className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full p-0 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
               >
                 <Play className="h-4 w-4" />
               </Button>
             </div>
+            
+            <div className="flex-1 min-w-0 space-y-1">
+              <h4 className="font-semibold text-foreground truncate">{song.title}</h4>
+              <p className="text-sm text-muted-foreground truncate">{song.artist}</p>
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>{song.duration}</span>
+                <div className="flex gap-1">
+                  {song.genre?.slice(0, 2).map((g, index) => (
+                    <span key={index} className="bg-primary/20 text-primary px-2 py-0.5 rounded-full text-xs">
+                      {g}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   );
 };
