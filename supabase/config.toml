@@ -1,1 +1,18 @@
 project_id = "svvurkytdhwolobuehgy"
+
+[auth]
+enabled = true
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000"]
+
+[functions.spotify-auth]
+verify_jwt = true
+
+[functions.google-calendar]
+verify_jwt = true
+
+[functions.weather-context]
+verify_jwt = true
+
+[functions.contextual-playlist]
+verify_jwt = true
