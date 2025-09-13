@@ -31,7 +31,7 @@ serve(async (req) => {
       throw new Error('Invalid token');
     }
 
-    const { weatherContext, calendarEvents, timeOfDay, forceGenerate = false } = await req.json();
+    const { weatherContext, calendarEvents, timeOfDay, emotionContext, forceGenerate = false } = await req.json();
 
     // Check user preferences
     const { data: preferences } = await supabase

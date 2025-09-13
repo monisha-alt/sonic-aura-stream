@@ -3,11 +3,12 @@ import { motion } from 'framer-motion';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Music, Settings, Zap, Users, Brain } from 'lucide-react';
+import { Music, Settings, Zap, Users, Brain, Mic } from 'lucide-react';
 import SpotifyConnect from '@/components/integrations/SpotifyConnect';
 import GoogleCalendarConnect from '@/components/integrations/GoogleCalendarConnect';
 import ContextualSettings from '@/components/integrations/ContextualSettings';
 import ContextualPlaylistPreview from '@/components/integrations/ContextualPlaylistPreview';
+import VoiceEmotionDetector from '@/components/integrations/VoiceEmotionDetector';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 
@@ -108,10 +109,14 @@ const IntegrationsPage = () => {
 
             <motion.div variants={itemVariants}>
               <Tabs defaultValue="connections" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-3 h-12">
+                <TabsList className="grid w-full grid-cols-4 h-12">
                   <TabsTrigger value="connections" className="flex items-center gap-2">
                     <Music className="h-4 w-4" />
                     <span className="hidden sm:inline">Connections</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="emotion" className="flex items-center gap-2">
+                    <Mic className="h-4 w-4" />
+                    <span className="hidden sm:inline">Voice AI</span>
                   </TabsTrigger>
                   <TabsTrigger value="settings" className="flex items-center gap-2">
                     <Settings className="h-4 w-4" />
@@ -133,6 +138,22 @@ const IntegrationsPage = () => {
                   >
                     <SpotifyConnect onConnectionChange={setSpotifyConnected} />
                     <GoogleCalendarConnect onConnectionChange={setCalendarConnected} />
+                  </motion.div>
+                </TabsContent>
+
+                <TabsContent value="emotion">
+                  <motion.div
+                    variants={tabContentVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <VoiceEmotionDetector 
+                      onEmotionDetected={(emotion) => {
+                        console.log('Emotion detected:', emotion);
+                        // This will trigger playlist regeneration in the preview tab
+                      }}
+                    />
                   </motion.div>
                 </TabsContent>
 

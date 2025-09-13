@@ -16,3 +16,6 @@ verify_jwt = true
 
 [functions.contextual-playlist]
 verify_jwt = true
+
+[functions.emotion-detection]
+verify_jwt = true

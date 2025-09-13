@@ -133,6 +133,7 @@ const ContextualPlaylistPreview: React.FC<ContextualPlaylistPreviewProps> = ({ o
           weatherContext,
           calendarEvents,
           timeOfDay,
+          emotionContext: (window as any).lastEmotionDetection || null, // Use emotion if available
           forceGenerate: force,
         },
         headers: {
