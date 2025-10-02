@@ -12,6 +12,7 @@ import ArtistDetailPage from './pages/ArtistDetailPage';
 import LiveSessionsPage from './pages/LiveSessionsPage';
 import LyricsPage from './pages/LyricsPage';
 import FavoritesPage from './pages/FavoritesPage';
+import VoiceChatPage from './pages/VoiceChatPage';
 import NotFound from './pages/NotFound';
 import './App.css';
 
@@ -31,6 +32,7 @@ function App() {
         <Route path="/live" element={<LiveSessionsPage />} />
         <Route path="/lyrics" element={<LyricsPage />} />
         <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/voice-chat" element={<VoiceChatPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />

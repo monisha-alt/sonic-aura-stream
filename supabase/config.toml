@@ -19,3 +19,6 @@ verify_jwt = true
 
 [functions.emotion-detection]
 verify_jwt = true
+
+[functions.voice-chatbot]
+verify_jwt = true

@@ -11,7 +11,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { cn } from "@/lib/utils";
-import { Music, Headphones, Users, Share2, Wand2, Library } from "lucide-react";
+import { Music, Headphones, Users, Share2, Wand2, Library, MessageCircle } from "lucide-react";
 
 const MainNavigationMenu = () => {
   const location = useLocation();
@@ -100,6 +100,24 @@ const MainNavigationMenu = () => {
                     <div className="text-sm font-medium leading-none">Live Sessions</div>
                     <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
                       Join other listeners in real-time music sessions
+                    </p>
+                  </NavigationMenuLink>
+                </Link>
+              </li>
+              <li>
+                <Link to="/voice-chat">
+                  <NavigationMenuLink 
+                    className={cn(
+                      "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                      isActive("/voice-chat") && "bg-accent text-accent-foreground"
+                    )}
+                  >
+                    <div className="flex items-center gap-2">
+                      <MessageCircle className="w-4 h-4" />
+                      <div className="text-sm font-medium leading-none">Voice Chat</div>
+                    </div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                      Talk to AI and get emotion-aware music suggestions
                     </p>
                   </NavigationMenuLink>
                 </Link>
