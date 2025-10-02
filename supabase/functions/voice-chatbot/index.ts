@@ -6,7 +6,87 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Process base64 in chunks
+// Emotion to Spotify mapping
+const emotionToSpotifySeeds = {
+  happy: { genres: ['pop', 'dance', 'funk'], valence: 0.8, energy: 0.8 },
+  sad: { genres: ['acoustic', 'indie', 'alternative'], valence: 0.2, energy: 0.3 },
+  angry: { genres: ['rock', 'metal', 'punk'], valence: 0.3, energy: 0.9 },
+  calm: { genres: ['ambient', 'classical', 'lo-fi'], valence: 0.5, energy: 0.2 },
+  energetic: { genres: ['edm', 'electronic', 'dance'], valence: 0.7, energy: 0.95 },
+  romantic: { genres: ['r-n-b', 'soul', 'jazz'], valence: 0.7, energy: 0.4 },
+  nostalgic: { genres: ['indie', 'alternative', 'folk'], valence: 0.5, energy: 0.4 },
+  anxious: { genres: ['ambient', 'meditation', 'new-age'], valence: 0.4, energy: 0.2 },
+  neutral: { genres: ['pop', 'indie', 'alternative'], valence: 0.5, energy: 0.5 }
+};
+
+async function getSpotifyAccessToken() {
+  const clientId = Deno.env.get('SPOTIFY_CLIENT_ID');
+  const clientSecret = Deno.env.get('SPOTIFY_CLIENT_SECRET');
+  
+  if (!clientId || !clientSecret) {
+    console.warn('Spotify credentials not configured');
+    return null;
+  }
+
+  const response = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': 'Basic ' + btoa(`${clientId}:${clientSecret}`)
+    },
+    body: 'grant_type=client_credentials'
+  });
+
+  if (!response.ok) {
+    console.error('Failed to get Spotify token');
+    return null;
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+async function getSpotifyRecommendations(emotion: string, intensity: number) {
+  const accessToken = await getSpotifyAccessToken();
+  
+  if (!accessToken) {
+    return null;
+  }
+
+  const seeds = emotionToSpotifySeeds[emotion as keyof typeof emotionToSpotifySeeds] || emotionToSpotifySeeds.neutral;
+  const genres = seeds.genres.slice(0, 3).join(',');
+  
+  const params = new URLSearchParams({
+    seed_genres: genres,
+    target_valence: seeds.valence.toString(),
+    target_energy: (seeds.energy * intensity).toString(),
+    limit: '5'
+  });
+
+  const response = await fetch(`https://api.spotify.com/v1/recommendations?${params}`, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`
+    }
+  });
+
+  if (!response.ok) {
+    console.error('Failed to get Spotify recommendations');
+    return null;
+  }
+
+  const data = await response.json();
+  return data.tracks.map((track: any) => ({
+    id: track.id,
+    name: track.name,
+    artists: track.artists.map((a: any) => a.name).join(', '),
+    album: track.album.name,
+    image: track.album.images[0]?.url,
+    preview_url: track.preview_url,
+    external_url: track.external_urls.spotify
+  }));
+}
+
+// Process base64 in chunks to prevent memory issues
 function processBase64Chunks(base64String: string, chunkSize = 32768) {
   const chunks: Uint8Array[] = [];
   let position = 0;
@@ -126,6 +206,15 @@ Keep responses concise (2-3 sentences) and conversational.`;
     const chatResult = await chatResponse.json();
     const aiResponse = chatResult.choices[0].message.content;
 
+    // Get Spotify recommendations based on emotion
+    let musicSuggestions = null;
+    if (detectedEmotion) {
+      musicSuggestions = await getSpotifyRecommendations(
+        detectedEmotion.emotion,
+        detectedEmotion.intensity
+      );
+    }
+
     // Generate audio response
     const ttsResponse = await fetch('https://api.openai.com/v1/audio/speech', {
       method: 'POST',
@@ -152,7 +241,9 @@ Keep responses concise (2-3 sentences) and conversational.`;
       JSON.stringify({
         userMessage,
         aiResponse,
-        audioResponse: base64Audio
+        audioResponse: base64Audio,
+        musicSuggestions,
+        detectedEmotion
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

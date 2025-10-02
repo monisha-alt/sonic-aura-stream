@@ -4,9 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Mic, MicOff, Volume2, VolumeX, Bot, User, Sparkles, Heart } from 'lucide-react';
+import { Mic, MicOff, Volume2, VolumeX, Bot, User, Sparkles, Music2, ExternalLink, Play } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
+interface SpotifyTrack {
+  id: string;
+  name: string;
+  artists: string;
+  album: string;
+  image: string;
+  preview_url: string;
+  external_url: string;
+}
 
 interface Message {
   role: 'user' | 'assistant';
@@ -16,6 +26,7 @@ interface Message {
     intensity: number;
     mood: string;
   };
+  musicSuggestions?: SpotifyTrack[];
 }
 
 interface EmotionResult {
@@ -192,12 +203,18 @@ const VoiceChatbot: React.FC = () => {
         content: data.userMessage
       }]);
 
-      // Add AI response
+      // Add AI response with music suggestions
       setMessages(prev => [...prev, {
         role: 'assistant',
         content: data.aiResponse,
-        emotion: currentEmotion || undefined
+        emotion: data.detectedEmotion || currentEmotion || undefined,
+        musicSuggestions: data.musicSuggestions || undefined
       }]);
+
+      // Update current emotion if detected
+      if (data.detectedEmotion) {
+        setCurrentEmotion(data.detectedEmotion);
+      }
 
       // Play audio response
       if (data.audioResponse) {
@@ -326,18 +343,18 @@ const VoiceChatbot: React.FC = () => {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.3 }}
-                    className={`mb-4 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    className={`mb-6 flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`flex gap-3 max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                    <div className={`flex gap-3 max-w-[85%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                      <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
                         message.role === 'user' 
-                          ? 'bg-primary text-primary-foreground' 
-                          : 'bg-secondary text-secondary-foreground'
+                          ? 'bg-gradient-to-br from-primary to-primary/80 text-primary-foreground' 
+                          : 'bg-gradient-to-br from-secondary to-secondary/80 text-secondary-foreground'
                       }`}>
-                        {message.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                        {message.role === 'user' ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
                       </div>
-                      <div className="flex flex-col gap-1">
-                        <div className={`rounded-2xl px-4 py-3 ${
+                      <div className="flex flex-col gap-2 flex-1">
+                        <div className={`rounded-2xl px-4 py-3 shadow-sm ${
                           message.role === 'user'
                             ? 'bg-primary text-primary-foreground'
                             : 'bg-secondary text-secondary-foreground'
@@ -345,10 +362,75 @@ const VoiceChatbot: React.FC = () => {
                           <p className="text-sm leading-relaxed">{message.content}</p>
                         </div>
                         {message.emotion && (
-                          <div className="flex gap-1 text-xs text-muted-foreground px-2">
-                            <span>{getEmotionIcon(message.emotion.emotion)}</span>
-                            <span>{message.emotion.mood}</span>
-                          </div>
+                          <motion.div 
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="flex items-center gap-2 px-2"
+                          >
+                            <Badge variant="outline" className="text-xs">
+                              {getEmotionIcon(message.emotion.emotion)} {message.emotion.emotion}
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">{message.emotion.mood}</span>
+                          </motion.div>
+                        )}
+                        {message.musicSuggestions && message.musicSuggestions.length > 0 && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="mt-2 space-y-2"
+                          >
+                            <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground px-2">
+                              <Music2 className="h-3 w-3" />
+                              <span>Music Suggestions for You</span>
+                            </div>
+                            <div className="grid gap-2">
+                              {message.musicSuggestions.slice(0, 3).map((track, idx) => (
+                                <motion.div
+                                  key={track.id}
+                                  initial={{ opacity: 0, x: -10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{ delay: 0.1 * idx }}
+                                  className="flex items-center gap-3 p-2 rounded-lg bg-background/50 hover:bg-background/80 transition-colors border border-border/50"
+                                >
+                                  {track.image && (
+                                    <img 
+                                      src={track.image} 
+                                      alt={track.name}
+                                      className="w-12 h-12 rounded object-cover shadow-sm"
+                                    />
+                                  )}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium truncate">{track.name}</p>
+                                    <p className="text-xs text-muted-foreground truncate">{track.artists}</p>
+                                  </div>
+                                  <div className="flex gap-1">
+                                    {track.preview_url && (
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="h-8 w-8"
+                                        onClick={() => {
+                                          const audio = new Audio(track.preview_url);
+                                          audio.play();
+                                        }}
+                                      >
+                                        <Play className="h-4 w-4" />
+                                      </Button>
+                                    )}
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="h-8 w-8"
+                                      onClick={() => window.open(track.external_url, '_blank')}
+                                    >
+                                      <ExternalLink className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
                         )}
                       </div>
                     </div>
