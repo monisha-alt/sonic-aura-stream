@@ -19,12 +19,12 @@ export interface Song {
   updated_at: string | null;
 }
 
-export const useSongs = (source: 'auto' | 'itunes' | 'supabase' = 'auto') => {
+export const useSongs = (source: 'auto' | 'itunes' | 'supabase' = 'itunes') => {
   return useQuery({
     queryKey: ['songs', source],
     queryFn: async () => {
-      // When source is 'supabase' or 'auto', try Supabase first
-      if (source !== 'itunes') {
+      // Prioritize iTunes API by default
+      if (source === 'supabase') {
         console.log('Fetching songs from Supabase...');
         try {
           const { data, error } = await supabase
@@ -37,16 +37,11 @@ export const useSongs = (source: 'auto' | 'itunes' | 'supabase' = 'auto') => {
             console.log('Successfully fetched songs:', data.length, 'songs');
             return data as Song[];
           }
-          if (source === 'supabase') {
-            console.warn('Supabase returned no songs.');
-            return [];
-          }
+          console.warn('Supabase returned no songs.');
+          return [];
         } catch (err) {
-          if (source === 'supabase') {
-            console.error('Supabase fetch failed:', err);
-            throw err;
-          }
-          console.warn('Supabase fetch failed or returned no data. Falling back to iTunes sample songs.', err);
+          console.error('Supabase fetch failed:', err);
+          throw err;
         }
       }
 

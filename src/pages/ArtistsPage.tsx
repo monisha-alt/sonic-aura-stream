@@ -1,43 +1,10 @@
 
-import { useSongs } from "@/hooks/useSongs";
+import { useItunesArtists } from "@/hooks/useItunesArtists";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 
 const ArtistsPage = () => {
-  const { data: songs = [], isLoading, error } = useSongs();
-
-  // Group songs by artist
-  const artistsMap = new Map();
-  songs.forEach(song => {
-    if (!artistsMap.has(song.artist)) {
-      artistsMap.set(song.artist, {
-        id: song.id,
-        name: song.artist,
-        image: song.cover_url || 'https://images.unsplash.com/photo-1621153359446-75218a80796a?q=80&w=400&h=400&auto=format&fit=crop',
-        bio: `${song.artist} is a talented artist known for their unique style and musical innovation.`,
-        genres: song.genre || [],
-        popularSongs: [song.id],
-        albums: [song.album],
-        languages: [song.language],
-        country: 'Unknown'
-      });
-    } else {
-      const artist = artistsMap.get(song.artist);
-      artist.popularSongs.push(song.id);
-      if (song.album && !artist.albums.includes(song.album)) {
-        artist.albums.push(song.album);
-      }
-      if (song.genre) {
-        song.genre.forEach(genre => {
-          if (!artist.genres.includes(genre)) {
-            artist.genres.push(genre);
-          }
-        });
-      }
-    }
-  });
-
-  const artists = Array.from(artistsMap.values());
+  const { data: artists = [], isLoading, error } = useItunesArtists();
 
   if (isLoading) {
     return (
