@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useSongs } from "@/hooks/useSongs";
 import { useAudioPlayer } from "@/hooks/useAudioPlayer";
 import { useFavorites } from "@/hooks/useFavorites";
+import { useListeningHistory } from "@/hooks/useListeningHistory";
 import SongCard from "@/components/SongCard";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
@@ -18,6 +19,7 @@ const MusicLibraryPage = () => {
   const [source, setSource] = useState<'auto' | 'itunes' | 'supabase'>('auto');
   const { data: songs = [], isLoading, error } = useSongs(source);
   const { favorites, toggleFavorite, isFavorited } = useFavorites();
+  const { hasListened, trackListen } = useListeningHistory();
   const {
     isPlaying,
     currentSong,
@@ -132,9 +134,13 @@ const MusicLibraryPage = () => {
                     language={song.language || "Unknown"}
                     mood={song.mood}
                     listens={song.listens || 0}
-                    onPlay={() => playSong(song)}
+                    onPlay={() => {
+                      playSong(song);
+                      trackListen(song.id, song.duration || 0);
+                    }}
                     onLike={() => toggleFavorite(song)}
                     isFavorited={isFavorited(song.id)}
+                    isUnlistened={!hasListened(song.id)}
                   />
                 ))}
               </div>

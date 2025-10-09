@@ -1,9 +1,11 @@
 
 import React, { useState } from "react";
-import { Play, Heart, MoreHorizontal } from "lucide-react";
+import { Play, Heart, MoreHorizontal, MessageCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
+import UnlistenedBadge from "./UnlistenedBadge";
 
 interface SongCardProps {
   id: string;
@@ -20,6 +22,8 @@ interface SongCardProps {
   onPlay?: () => void;
   onLike?: () => void;
   isFavorited?: boolean;
+  isUnlistened?: boolean;
+  commentCount?: number;
 }
 
 const SongCard: React.FC<SongCardProps> = ({
@@ -36,9 +40,12 @@ const SongCard: React.FC<SongCardProps> = ({
   listens,
   onPlay,
   onLike,
-  isFavorited = false
+  isFavorited = false,
+  isUnlistened = false,
+  commentCount = 0
 }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isFavorite, setIsFavorite] = useState(isFavorited);
   
   const formatListens = (count: number) => {
@@ -65,8 +72,11 @@ const SongCard: React.FC<SongCardProps> = ({
   };
 
   return (
-    <Card className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-200 group">
-      <CardContent className="p-4">
+    <Card 
+      className="bg-gray-800 border-gray-700 hover:bg-gray-700 transition-all duration-200 group cursor-pointer"
+      onClick={() => navigate(`/song/${id}`)}
+    >
+      <CardContent className="p-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start gap-4">
           <div className="relative">
             <img 
@@ -77,6 +87,11 @@ const SongCard: React.FC<SongCardProps> = ({
                 e.currentTarget.src = 'https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=400&h=400&auto=format&fit=crop';
               }}
             />
+            {isUnlistened && (
+              <div className="absolute -top-1 -right-1">
+                <UnlistenedBadge />
+              </div>
+            )}
             <button
               onClick={onPlay}
               className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-md hover:bg-opacity-70"

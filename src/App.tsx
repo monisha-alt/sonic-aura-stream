@@ -14,6 +14,7 @@ import LyricsPage from './pages/LyricsPage';
 import FavoritesPage from './pages/FavoritesPage';
 import VoiceChatPage from './pages/VoiceChatPage';
 import IntegrationsPage from './pages/IntegrationsPage';
+import SongDetailPage from './pages/SongDetailPage';
 import NotFound from './pages/NotFound';
 import './App.css';
 
@@ -35,6 +36,7 @@ function App() {
         <Route path="/favorites" element={<FavoritesPage />} />
         <Route path="/voice-chat" element={<VoiceChatPage />} />
         <Route path="/integrations" element={<IntegrationsPage />} />
+        <Route path="/song/:songId" element={<SongDetailPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
