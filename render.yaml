@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: aura-music-backend
+    env: python
+    plan: starter
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r backend/requirements.txt
+      pip install gunicorn
+    startCommand: cd backend && gunicorn main-simple:app -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT --timeout 120
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ENVIRONMENT
+        value: production
+      - key: LOG_LEVEL
+        value: INFO
+      - key: SPOTIFY_CLIENT_ID
+        sync: false
+      - key: SPOTIFY_CLIENT_SECRET
+        sync: false
+      - key: SPOTIFY_REDIRECT_URI
+        value: https://aura-music-backend.onrender.com/auth/spotify/callback
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://aura-music.vercel.app,https://www.aura-music.vercel.app,https://aura-music-app.vercel.app
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false

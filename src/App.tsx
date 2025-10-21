@@ -1,11 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
 import Index from './pages/Index'
-import AlbumsPage from './pages/AlbumsPage'
-import ArtistsPage from './pages/ArtistsPage'
-import ArtistDetailPage from './pages/ArtistDetailPage'
-import AlbumDetailPage from './pages/AlbumDetailPage'
-import LyricsPage from './pages/LyricsPage'
-import RemixPage from './pages/RemixPage'
 
 function App() {
   return (
