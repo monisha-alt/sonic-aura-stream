@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "name": "aura-music-frontend",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://aura-music-backend.onrender.com/api/$1"
+    },
+    {
+      "source": "/auth/(.*)",
+      "destination": "https://aura-music-backend.onrender.com/auth/$1"
+    },
+    {
+      "source": "/spotify/(.*)",
+      "destination": "https://aura-music-backend.onrender.com/spotify/$1"
+    },
+    {
+      "source": "/voice/(.*)",
+      "destination": "https://aura-music-backend.onrender.com/voice/$1"
+    },
+    {
+      "source": "/feedback/(.*)",
+      "destination": "https://aura-music-backend.onrender.com/feedback/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "env": {
+    "VITE_API_URL": "https://aura-music-backend.onrender.com",
+    "VITE_ENV": "production"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
