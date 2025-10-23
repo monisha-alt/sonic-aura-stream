@@ -1,0 +1,66 @@
+# Dependencies
+node_modules
+node_modules/
+/node_modules
+
+# Build outputs
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backend
+backend/__pycache__/
+backend/.env
+backend/tmp_uploads/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+.Python
+venv/
+ENV/
+env/
+.venv
+
+# Hugging Face
+huggingface-deploy/
+huggingface-deploy
+
+# Vite Project folder (duplicate/old project)
+vite-project/
+vite-project
+
+# Documentation files (may contain sensitive info)
+*.md
+!README.md
+
