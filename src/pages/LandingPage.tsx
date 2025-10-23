@@ -33,7 +33,6 @@ const LandingPage = () => {
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
       },
     },
   };
@@ -42,8 +41,7 @@ const LandingPage = () => {
     y: [0, -20, 0],
     transition: {
       duration: 3,
-      repeat: Infinity,
-      ease: "easeInOut",
+      repeat: Infinity as number,
     },
   };
 
