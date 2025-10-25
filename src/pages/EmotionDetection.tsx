@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, ArrowLeft, Volume2, AlertCircle, Play, ExternalLink } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSongsByMood, Song } from "../data/realSongs";
+import { getSongsByMood } from "../data/realSongs";
+import { useSpotifyRecommendations } from "../hooks/useSpotify";
 
 const EmotionDetection = () => {
   const navigate = useNavigate();
@@ -11,8 +12,17 @@ const EmotionDetection = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
   const [isValidVoice, setIsValidVoice] = useState(true);
-  const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
   const audioRef = useRef<MediaStream | null>(null);
+  
+  // Fetch songs from Spotify API based on detected emotion
+  const { songs: spotifySongs, loading: spotifyLoading } = useSpotifyRecommendations(
+    detectedEmotion || '',
+    !!detectedEmotion
+  );
+  
+  // Use Spotify songs if available, otherwise fallback to hardcoded
+  const recommendedSongs = spotifySongs.length > 0 ? spotifySongs.slice(0, 5) : 
+    detectedEmotion ? getSongsByMood(detectedEmotion).slice(0, 5) : [];
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationRef = useRef<number | null>(null);
 
@@ -86,10 +96,7 @@ const EmotionDetection = () => {
         const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
         setDetectedEmotion(randomEmotion.name);
         setIsAnalyzing(false);
-        
-        // Load real songs based on detected emotion
-        const songs = getSongsByMood(randomEmotion.name);
-        setRecommendedSongs(songs.slice(0, 5));
+        // Songs will be fetched automatically by useSpotifyRecommendations hook
       }, 3000);
       
     } catch (error) {
@@ -343,7 +350,7 @@ const EmotionDetection = () => {
           </div>
 
           {/* Recommended Songs */}
-          {detectedEmotion && recommendedSongs.length > 0 && (
+          {detectedEmotion && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -351,7 +358,15 @@ const EmotionDetection = () => {
             >
               <h3 className="text-2xl font-semibold mb-6 text-center">
                 🎵 Recommended Songs for {detectedEmotion} Mood
+                {spotifyLoading && <span className="text-sm text-gray-400 ml-2">(Loading from Spotify...)</span>}
               </h3>
+              
+              {spotifyLoading && recommendedSongs.length === 0 ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                  <p className="text-gray-400">Fetching songs from Spotify...</p>
+                </div>
+              ) : recommendedSongs.length > 0 ? (
               <div className="space-y-4">
                 {recommendedSongs.map((song, index) => (
                   <motion.div
@@ -393,6 +408,11 @@ const EmotionDetection = () => {
                   </motion.div>
                 ))}
               </div>
+              ) : (
+                <div className="text-center py-8 text-gray-400">
+                  <p>No songs found. Please try again.</p>
+                </div>
+              )}
             </motion.div>
           )}
 

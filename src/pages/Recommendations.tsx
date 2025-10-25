@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, ArrowLeft, Play, Heart, Key, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getRandomSongs, Song } from "../data/realSongs";
+import { getRandomSongs } from "../data/realSongs";
+import { useSpotifyTrending } from "../hooks/useSpotify";
 
 const Recommendations = () => {
   const navigate = useNavigate();
@@ -11,7 +12,12 @@ const Recommendations = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeOfDay, setTimeOfDay] = useState<string>("");
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
-  const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
+  
+  // Fetch trending songs from Spotify API
+  const { songs: spotifySongs, loading: spotifyLoading } = useSpotifyTrending(true);
+  
+  // Use Spotify songs if available, otherwise fallback to hardcoded
+  const recommendedSongs = spotifySongs.length > 0 ? spotifySongs.slice(0, 10) : getRandomSongs(10);
 
   useEffect(() => {
     const updateTime = () => {
@@ -60,9 +66,6 @@ const Recommendations = () => {
       { title: "Study Session", time: "20:00", type: "study" },
       { title: "Date Night", time: "19:30", type: "romantic" }
     ]);
-
-    // Load real songs
-    setRecommendedSongs(getRandomSongs(10));
 
     return () => clearInterval(interval);
   }, []);
@@ -333,7 +336,17 @@ const Recommendations = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h2 className="text-2xl font-bold mb-6">🎵 Recommended Songs</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            🎵 Recommended Songs
+            {spotifyLoading && <span className="text-sm text-gray-400 ml-2">(Loading from Spotify...)</span>}
+          </h2>
+          
+          {spotifyLoading && recommendedSongs.length === 0 ? (
+            <div className="text-center py-8">
+              <div className="animate-spin w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-gray-400">Fetching trending songs from Spotify...</p>
+            </div>
+          ) : (
           <div className="space-y-4">
             {recommendedSongs.map((song, index) => (
               <motion.div
@@ -400,6 +413,7 @@ const Recommendations = () => {
               </motion.div>
             ))}
           </div>
+          )}
         </motion.div>
       </div>
     </div>
