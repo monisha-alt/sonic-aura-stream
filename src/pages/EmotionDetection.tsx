@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
-import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, ArrowLeft, Volume2, AlertCircle, Play, ExternalLink } from "lucide-react";
+import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, Volume2, AlertCircle, Play, ExternalLink } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import { getSongsByMood } from "../data/realSongs";
 import { useSpotifyRecommendations } from "../hooks/useSpotify";
 
 const EmotionDetection = () => {
-  const navigate = useNavigate();
   const [isListening, setIsListening] = useState(false);
   const [detectedEmotion, setDetectedEmotion] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -167,19 +165,9 @@ const EmotionDetection = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900 text-white">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => navigate("/")}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </motion.button>
-          <div>
-            <h1 className="text-2xl font-bold">AI Voice Emotion Detection</h1>
-            <p className="text-gray-300">Speak naturally and let AI analyze your emotions</p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold">AI Voice Emotion Detection</h1>
+          <p className="text-gray-300 mt-1">Speak naturally and let AI analyze your emotions</p>
         </div>
       </div>
 

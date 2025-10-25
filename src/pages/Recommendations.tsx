@@ -1,12 +1,10 @@
 import { motion } from "framer-motion";
-import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, ArrowLeft, Play, Heart, Key, ExternalLink } from "lucide-react";
+import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, Play, Heart, Key, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { getRandomSongs } from "../data/realSongs";
 import { useSpotifyTrending } from "../hooks/useSpotify";
 
 const Recommendations = () => {
-  const navigate = useNavigate();
   const [weather, setWeather] = useState<any>(null);
   const [location, setLocation] = useState<string>("");
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -215,19 +213,9 @@ const Recommendations = () => {
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900 text-white">
       {/* Header */}
       <div className="p-6 border-b border-white/10">
-        <div className="flex items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => navigate("/")}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </motion.button>
-          <div>
-            <h1 className="text-2xl font-bold">Smart Recommendations</h1>
-            <p className="text-gray-300">AI-powered playlists based on your context</p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold">Smart Recommendations</h1>
+          <p className="text-gray-300 mt-1">AI-powered playlists based on your context</p>
         </div>
       </div>
 
