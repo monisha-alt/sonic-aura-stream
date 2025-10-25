@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Share2, ArrowLeft, Play, Pause, SkipForward, SkipBack, Volume2, Clock, Users, TrendingUp } from "lucide-react";
+import { MessageCircle, Heart, Share2, ArrowLeft, Play, Pause, SkipForward, SkipBack, Volume2, Clock, Users, TrendingUp, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { trendingSongs } from "../data/realSongs";
 
 const Social = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ const Social = () => {
   const [comments, setComments] = useState<any[]>([]);
   const [newComment, setNewComment] = useState("");
   const [showCommentBox, setShowCommentBox] = useState(false);
+  const [currentSong] = useState(trendingSongs[0]); // Using first trending song
 
   useEffect(() => {
     // Simulate existing comments
@@ -153,11 +155,16 @@ const Social = () => {
           <div className="h-full flex flex-col">
             {/* Song Info */}
             <div className="text-center mb-8">
-              <div className="w-48 h-48 mx-auto mb-6 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
-                <Play className="w-16 h-16 text-white" />
+              <div className="w-64 h-64 mx-auto mb-6 rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={currentSong.albumArt} 
+                  alt={currentSong.album}
+                  className="w-full h-full object-cover"
+                />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Sample Song</h2>
-              <p className="text-lg text-gray-300 mb-4">Sample Artist</p>
+              <h2 className="text-3xl font-bold mb-2">{currentSong.title}</h2>
+              <p className="text-xl text-gray-300 mb-2">{currentSong.artist}</p>
+              <p className="text-sm text-gray-400 mb-4">{currentSong.album}</p>
               <div className="flex items-center justify-center gap-4 text-sm text-gray-400">
                 <div className="flex items-center gap-1">
                   <Users className="w-4 h-4" />
@@ -167,6 +174,17 @@ const Social = () => {
                   <TrendingUp className="w-4 h-4" />
                   <span>#1 trending</span>
                 </div>
+                {currentSong.spotifyId && (
+                  <a
+                    href={`https://open.spotify.com/track/${currentSong.spotifyId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-green-400 hover:text-green-300 transition-colors"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>Open in Spotify</span>
+                  </a>
+                )}
               </div>
             </div>
 

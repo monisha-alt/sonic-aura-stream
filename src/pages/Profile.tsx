@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { User, Clock, Key, Play, ArrowLeft, Settings, Music, Star } from "lucide-react";
+import { User, Clock, Key, ArrowLeft, Settings, Music, Star, ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getRandomSongs } from "../data/realSongs";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -20,13 +21,12 @@ const Profile = () => {
     { action: "Commented on", song: "Good 4 U", artist: "Olivia Rodrigo", time: "2 days ago" },
   ]);
 
-  const [unlistenedSongs, setUnlistenedSongs] = useState([
-    { id: 1, title: "New Discovery", artist: "Unknown Artist", duration: "3:45", genre: "Electronic", addedDate: "Today" },
-    { id: 2, title: "Hidden Gem", artist: "Indie Band", duration: "4:12", genre: "Alternative", addedDate: "Yesterday" },
-    { id: 3, title: "Fresh Track", artist: "New Artist", duration: "3:28", genre: "Pop", addedDate: "2 days ago" },
-    { id: 4, title: "Undiscovered", artist: "Local Artist", duration: "3:56", genre: "Rock", addedDate: "3 days ago" },
-    { id: 5, title: "Rare Find", artist: "Vintage Band", duration: "4:33", genre: "Jazz", addedDate: "1 week ago" },
-  ]);
+  const [unlistenedSongs, setUnlistenedSongs] = useState(
+    getRandomSongs(5).map((song, index) => ({
+      ...song,
+      addedDate: index === 0 ? "Today" : index === 1 ? "Yesterday" : `${index} days ago`
+    }))
+  );
 
   const [playlists] = useState([
     { id: 1, name: "My Favorites", songCount: 45, isPublic: true, lastPlayed: "2 hours ago" },
@@ -43,7 +43,7 @@ const Profile = () => {
     { id: 5, title: "Comment King", description: "Left 100 timestamp comments", icon: "💬", unlocked: false },
   ]);
 
-  const markAsListened = (songId: number) => {
+  const markAsListened = (songId: string) => {
     setUnlistenedSongs(unlistenedSongs.filter(song => song.id !== songId));
     setUserStats(prev => ({ ...prev, unlistenedSongs: prev.unlistenedSongs - 1 }));
   };
@@ -139,37 +139,53 @@ const Profile = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
                   whileHover={{ scale: 1.02, x: 5 }}
-                  className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all"
+                  className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all group"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white" />
-                  </div>
+                  <img 
+                    src={song.albumArt} 
+                    alt={song.album}
+                    className="w-16 h-16 rounded-lg object-cover shadow-lg"
+                  />
                   
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold">{song.title}</h4>
+                      <h4 className="font-semibold group-hover:text-purple-400 transition-colors">{song.title}</h4>
                       <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
+                        animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
                         className="text-yellow-400"
+                        title="Unlistened - New Discovery!"
                       >
                         <Key className="w-4 h-4" />
                       </motion.div>
                     </div>
                     <p className="text-sm text-gray-400">{song.artist} • {song.genre}</p>
-                    <p className="text-xs text-gray-500">Added {song.addedDate}</p>
+                    <p className="text-xs text-gray-500">{song.album} • Added {song.addedDate}</p>
                   </div>
 
                   <div className="text-sm text-gray-400">{song.duration}</div>
 
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => markAsListened(song.id)}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium hover:from-purple-500 hover:to-pink-500 transition-all"
-                  >
-                    Mark as Listened
-                  </motion.button>
+                  <div className="flex items-center gap-2">
+                    {song.spotifyId && (
+                      <a
+                        href={`https://open.spotify.com/track/${song.spotifyId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-2 bg-green-600 hover:bg-green-500 rounded-full transition-colors"
+                        title="Open in Spotify"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    )}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => markAsListened(song.id)}
+                      className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg text-white text-sm font-medium hover:from-purple-500 hover:to-pink-500 transition-all"
+                    >
+                      Mark as Listened
+                    </motion.button>
+                  </div>
                 </motion.div>
               ))}
             </div>

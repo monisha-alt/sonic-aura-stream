@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, ArrowLeft, Play, Heart, Share2, Key } from "lucide-react";
+import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, ArrowLeft, Play, Heart, Key, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getRandomSongs, Song } from "../data/realSongs";
 
 const Recommendations = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const Recommendations = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeOfDay, setTimeOfDay] = useState<string>("");
   const [calendarEvents, setCalendarEvents] = useState<any[]>([]);
+  const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -58,6 +60,9 @@ const Recommendations = () => {
       { title: "Study Session", time: "20:00", type: "study" },
       { title: "Date Night", time: "19:30", type: "romantic" }
     ]);
+
+    // Load real songs
+    setRecommendedSongs(getRandomSongs(10));
 
     return () => clearInterval(interval);
   }, []);
@@ -200,13 +205,6 @@ const Recommendations = () => {
     return playlists;
   };
 
-  const sampleSongs = [
-    { id: "song1", title: "Walking on Sunshine", artist: "Katrina and the Waves", duration: "3:45", isUnlistened: true },
-    { id: "song2", title: "Here Comes the Sun", artist: "The Beatles", duration: "3:05", isUnlistened: false },
-    { id: "song3", title: "Good Day Sunshine", artist: "The Beatles", duration: "2:10", isUnlistened: true },
-    { id: "song4", title: "Sunshine of Your Love", artist: "Cream", duration: "4:10", isUnlistened: false },
-    { id: "song5", title: "You Are My Sunshine", artist: "Johnny Cash", duration: "2:45", isUnlistened: true },
-  ];
 
   const playlists = getContextualPlaylists();
 
@@ -335,37 +333,55 @@ const Recommendations = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <h2 className="text-2xl font-bold mb-6">Recommended Songs</h2>
+          <h2 className="text-2xl font-bold mb-6">🎵 Recommended Songs</h2>
           <div className="space-y-4">
-            {sampleSongs.map((song) => (
+            {recommendedSongs.map((song, index) => (
               <motion.div
                 key={song.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
                 whileHover={{ scale: 1.01, x: 5 }}
-                className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all"
+                className="flex items-center gap-4 p-4 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all group"
               >
-                <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-                  <Play className="w-5 h-5 text-white" />
-                </div>
+                <img 
+                  src={song.albumArt} 
+                  alt={song.album}
+                  className="w-16 h-16 rounded-lg object-cover shadow-lg"
+                />
                 
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{song.title}</h3>
-                    {song.isUnlistened && (
+                    <h3 className="font-semibold text-white group-hover:text-purple-400 transition-colors">{song.title}</h3>
+                    {index % 3 === 0 && (
                       <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
+                        animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
                         transition={{ duration: 2, repeat: Infinity }}
                         className="text-yellow-400"
+                        title="Unlistened - New Discovery!"
                       >
                         <Key className="w-4 h-4" />
                       </motion.div>
                     )}
                   </div>
                   <p className="text-sm text-gray-400">{song.artist}</p>
+                  <p className="text-xs text-gray-500">{song.album} • {song.genre}</p>
                 </div>
 
                 <div className="text-sm text-gray-400">{song.duration}</div>
 
                 <div className="flex items-center gap-2">
+                  {song.spotifyId && (
+                    <a
+                      href={`https://open.spotify.com/track/${song.spotifyId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 bg-green-600 hover:bg-green-500 rounded-full transition-colors"
+                      title="Open in Spotify"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  )}
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -376,9 +392,9 @@ const Recommendations = () => {
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
-                    className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                    className="p-2 rounded-full bg-purple-600 hover:bg-purple-500 transition-colors"
                   >
-                    <Share2 className="w-4 h-4" />
+                    <Play className="w-4 h-4" />
                   </motion.button>
                 </div>
               </motion.div>

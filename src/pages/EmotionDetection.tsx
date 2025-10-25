@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, ArrowLeft, Volume2, AlertCircle } from "lucide-react";
+import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, ArrowLeft, Volume2, AlertCircle, Play, ExternalLink } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { getSongsByMood, Song } from "../data/realSongs";
 
 const EmotionDetection = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const EmotionDetection = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [audioLevel, setAudioLevel] = useState(0);
   const [isValidVoice, setIsValidVoice] = useState(true);
+  const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
   const audioRef = useRef<MediaStream | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const animationRef = useRef<number | null>(null);
@@ -84,6 +86,10 @@ const EmotionDetection = () => {
         const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
         setDetectedEmotion(randomEmotion.name);
         setIsAnalyzing(false);
+        
+        // Load real songs based on detected emotion
+        const songs = getSongsByMood(randomEmotion.name);
+        setRecommendedSongs(songs.slice(0, 5));
       }, 3000);
       
     } catch (error) {
@@ -337,23 +343,53 @@ const EmotionDetection = () => {
           </div>
 
           {/* Recommended Songs */}
-          {detectedEmotion && (
+          {detectedEmotion && recommendedSongs.length > 0 && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="mt-8 p-6 bg-white/5 rounded-xl border border-white/10"
             >
-              <h3 className="text-lg font-semibold mb-4 text-center">
-                Recommended Songs for {detectedEmotion} Mood
+              <h3 className="text-2xl font-semibold mb-6 text-center">
+                🎵 Recommended Songs for {detectedEmotion} Mood
               </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {getEmotionData()?.songs.map((song, index) => (
+              <div className="space-y-4">
+                {recommendedSongs.map((song, index) => (
                   <motion.div
-                    key={index}
-                    whileHover={{ scale: 1.05 }}
-                    className="p-3 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all"
+                    key={song.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    className="flex items-center gap-4 p-4 bg-white/5 rounded-lg border border-white/10 hover:border-white/20 transition-all group"
                   >
-                    <div className="text-sm font-medium">{song}</div>
+                    <img 
+                      src={song.albumArt} 
+                      alt={song.album}
+                      className="w-16 h-16 rounded-lg object-cover shadow-lg"
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-white group-hover:text-purple-400 transition-colors">
+                        {song.title}
+                      </h4>
+                      <p className="text-sm text-gray-400">{song.artist}</p>
+                      <p className="text-xs text-gray-500">{song.album} • {song.duration}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {song.spotifyId && (
+                        <a
+                          href={`https://open.spotify.com/track/${song.spotifyId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-2 bg-green-600 hover:bg-green-500 rounded-full transition-colors"
+                          title="Open in Spotify"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      )}
+                      <button className="p-2 bg-purple-600 hover:bg-purple-500 rounded-full transition-colors">
+                        <Play className="w-4 h-4" />
+                      </button>
+                    </div>
                   </motion.div>
                 ))}
               </div>
