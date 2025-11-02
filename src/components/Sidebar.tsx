@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Home, Music, Heart, User, List, Library, TrendingUp, Mic, MessageCircle, UserCircle, Plus, Search } from "lucide-react";
+import { Home, Music, Heart, User, List, Library, TrendingUp, Mic, MessageCircle, UserCircle, Plus, Search, Calendar } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 
@@ -10,7 +10,9 @@ const Sidebar = () => {
 
   const mainMenuItems = [
     { name: "Home", icon: Home, path: "/" },
+    { name: "Music Library", icon: Library, path: "/library" },
     { name: "Emotion Detection", icon: Mic, path: "/emotion" },
+    { name: "Calendar", icon: Calendar, path: "/calendar" },
     { name: "Recommendations", icon: TrendingUp, path: "/recommendations" },
     { name: "Social", icon: MessageCircle, path: "/social" },
     { name: "Profile", icon: UserCircle, path: "/profile" },
@@ -21,12 +23,13 @@ const Sidebar = () => {
     { name: "Recently Played", icon: List, count: 48 },
   ];
 
+  // Use placeholder images instead of Spotify URLs to avoid 404 errors
   const artistsList = [
-    { name: "The Weeknd", image: "https://i.scdn.co/image/ab6761610000e5eb214f3cf1cbe7139c1e26ffbb" },
-    { name: "Taylor Swift", image: "https://i.scdn.co/image/ab6761610000e5ebe672b5f553298dcdccb0e676" },
-    { name: "Ed Sheeran", image: "https://i.scdn.co/image/ab6761610000e5eb3bcef85e105dfc42399ef0ba" },
-    { name: "Adele", image: "https://i.scdn.co/image/ab6761610000e5eb68f6e5892075d7f22615bd17" },
-    { name: "Dua Lipa", image: "https://i.scdn.co/image/ab6761610000e5eb0c68f6c95232e716f0abee8d" },
+    { name: "The Weeknd", image: "/placeholder.svg" },
+    { name: "Taylor Swift", image: "/placeholder.svg" },
+    { name: "Ed Sheeran", image: "/placeholder.svg" },
+    { name: "Adele", image: "/placeholder.svg" },
+    { name: "Dua Lipa", image: "/placeholder.svg" },
   ];
 
   const favoritesList = [
@@ -157,6 +160,15 @@ const Sidebar = () => {
                       src={artist.image}
                       alt={artist.name}
                       className="w-8 h-8 rounded-full object-cover"
+                      onError={(e) => {
+                        // Fallback to a gradient background if image fails
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                        }
+                      }}
                     />
                     <span className="text-sm truncate">{artist.name}</span>
                   </motion.button>
