@@ -22,7 +22,7 @@ export const happySongs: Song[] = [
     artist: "The Weeknd",
     album: "After Hours",
     duration: "3:20",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b2738863bc11d2aa12b54f5aeb36",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "0VjIjW4GlUZAMYd2vXMi3b"
@@ -33,7 +33,7 @@ export const happySongs: Song[] = [
     artist: "Dua Lipa",
     album: "Future Nostalgia",
     duration: "3:23",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273be841ba4bc24340152e3a79a",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "39LLxExYz6ewLAcYrzQQyP"
@@ -44,7 +44,7 @@ export const happySongs: Song[] = [
     artist: "Olivia Rodrigo",
     album: "SOUR",
     duration: "2:58",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273a91c10fe9472d9bd89802e5a",
+    albumArt: "/placeholder.svg",
     genre: "Pop Rock",
     mood: "happy",
     spotifyId: "4ZtFanR9U6ndgddUvNcjcG"
@@ -55,7 +55,7 @@ export const happySongs: Song[] = [
     artist: "Mark Ronson ft. Bruno Mars",
     album: "Uptown Special",
     duration: "4:30",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273e419ccba0baa8bd3f3d7abf2",
+    albumArt: "/placeholder.svg",
     genre: "Funk",
     mood: "happy",
     spotifyId: "32OlwWuMpZ6b0aN2RZOeMS"
@@ -66,7 +66,7 @@ export const happySongs: Song[] = [
     artist: "Queen",
     album: "Jazz",
     duration: "3:29",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273ce4f1737bc8a646c8c4bd25a",
+    albumArt: "/placeholder.svg",
     genre: "Rock",
     mood: "happy",
     spotifyId: "7hQJA50XrCWABAu5v6QZ4i"
@@ -81,7 +81,7 @@ export const sadSongs: Song[] = [
     artist: "Adele",
     album: "21",
     duration: "4:45",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273372eb7ab49aed0e3d83f3f59",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "sad",
     spotifyId: "1zwMYTA5nlNjZxYrvBB2pV"
@@ -92,7 +92,7 @@ export const sadSongs: Song[] = [
     artist: "Lord Huron",
     album: "Strange Trails",
     duration: "3:28",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b2737da94a1beda4172d8b4b4d28",
+    albumArt: "/placeholder.svg",
     genre: "Indie Folk",
     mood: "sad",
     spotifyId: "0NdTUS4UiNYCNn5FgVqKQY"
@@ -103,7 +103,7 @@ export const sadSongs: Song[] = [
     artist: "Bon Iver",
     album: "For Emma, Forever Ago",
     duration: "3:58",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273aa9e2dc3e5c91c4c2a0b1e1d",
+    albumArt: "/placeholder.svg",
     genre: "Indie Folk",
     mood: "sad",
     spotifyId: "01oSZZKuf6a1KVhBYZbPqv"
@@ -114,7 +114,7 @@ export const sadSongs: Song[] = [
     artist: "Johnny Cash",
     album: "American IV: The Man Comes Around",
     duration: "3:38",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273b8bbe5a3b7c6e5f7b3b3b3b3",
+    albumArt: "/placeholder.svg",
     genre: "Country",
     mood: "sad",
     spotifyId: "1gK3FgCrJWzVW0pbmzJCj2"
@@ -125,7 +125,7 @@ export const sadSongs: Song[] = [
     artist: "Coldplay",
     album: "X&Y",
     duration: "4:54",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273de09e0e9a1c9e0e9a1c9e0e9",
+    albumArt: "/placeholder.svg",
     genre: "Alternative Rock",
     mood: "sad",
     spotifyId: "7LVHVU3tWfcxj5aiPFEW4Q"
@@ -140,7 +140,7 @@ export const calmSongs: Song[] = [
     artist: "Marconi Union",
     album: "Weightless",
     duration: "8:09",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273f9f9f9f9f9f9f9f9f9f9f9f9",
+    albumArt: "/placeholder.svg",
     genre: "Ambient",
     mood: "calm",
     spotifyId: "2WfaOiMkCvy7F5fcp2zZ8L"
@@ -151,7 +151,7 @@ export const calmSongs: Song[] = [
     artist: "Claude Debussy",
     album: "Suite Bergamasque",
     duration: "5:24",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273e1e1e1e1e1e1e1e1e1e1e1e1",
+    albumArt: "/placeholder.svg",
     genre: "Classical",
     mood: "calm",
     spotifyId: "1prBHLRgRca5HwKYhLKMPh"
@@ -162,7 +162,7 @@ export const calmSongs: Song[] = [
     artist: "Bon Iver",
     album: "Bon Iver",
     duration: "5:36",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273b2b2b2b2b2b2b2b2b2b2b2b2",
+    albumArt: "/placeholder.svg",
     genre: "Indie Folk",
     mood: "calm",
     spotifyId: "6g0Orsxv6glTJCt4cHsRsQ"
@@ -173,7 +173,7 @@ export const calmSongs: Song[] = [
     artist: "Yiruma",
     album: "First Love",
     duration: "3:38",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273c3c3c3c3c3c3c3c3c3c3c3c3",
+    albumArt: "/placeholder.svg",
     genre: "Classical",
     mood: "calm",
     spotifyId: "4Ajg9J8M7N1JNW2Nh8LHZB"
@@ -184,7 +184,7 @@ export const calmSongs: Song[] = [
     artist: "Sia",
     album: "Colour the Small One",
     duration: "4:33",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273d4d4d4d4d4d4d4d4d4d4d4d4",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "calm",
     spotifyId: "6pZNbGw5YxRt9cCsAWKHT0"
@@ -199,7 +199,7 @@ export const energeticSongs: Song[] = [
     artist: "Survivor",
     album: "Eye of the Tiger",
     duration: "4:04",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273e5e5e5e5e5e5e5e5e5e5e5e5",
+    albumArt: "/placeholder.svg",
     genre: "Rock",
     mood: "energetic",
     spotifyId: "2KH16WveTQWT6KOG9Rg6e2"
@@ -210,7 +210,7 @@ export const energeticSongs: Song[] = [
     artist: "AC/DC",
     album: "The Razors Edge",
     duration: "4:52",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273f6f6f6f6f6f6f6f6f6f6f6f6",
+    albumArt: "/placeholder.svg",
     genre: "Rock",
     mood: "energetic",
     spotifyId: "57bgtoPSgt236HzfBOd8kj"
@@ -221,7 +221,7 @@ export const energeticSongs: Song[] = [
     artist: "Eminem ft. Nate Dogg",
     album: "The Eminem Show",
     duration: "4:57",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273g7g7g7g7g7g7g7g7g7g7g7g7",
+    albumArt: "/placeholder.svg",
     genre: "Hip Hop",
     mood: "energetic",
     spotifyId: "4xkOaSrkexMciUUogZKVTS"
@@ -232,7 +232,7 @@ export const energeticSongs: Song[] = [
     artist: "Eminem",
     album: "8 Mile Soundtrack",
     duration: "5:26",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273h8h8h8h8h8h8h8h8h8h8h8h8",
+    albumArt: "/placeholder.svg",
     genre: "Hip Hop",
     mood: "energetic",
     spotifyId: "5Z01UMMf7V1o0MzF86s6WJ"
@@ -243,7 +243,7 @@ export const energeticSongs: Song[] = [
     artist: "Kanye West",
     album: "Graduation",
     duration: "5:11",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273i9i9i9i9i9i9i9i9i9i9i9i9",
+    albumArt: "/placeholder.svg",
     genre: "Hip Hop",
     mood: "energetic",
     spotifyId: "0j2T0R9dR9qdJYsB7ciXhf"
@@ -258,7 +258,7 @@ export const romanticSongs: Song[] = [
     artist: "Ed Sheeran",
     album: "÷ (Divide)",
     duration: "4:23",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273j0j0j0j0j0j0j0j0j0j0j0j0",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "romantic",
     spotifyId: "0tgVpDi06FyKpA1z0VMD4v"
@@ -269,7 +269,7 @@ export const romanticSongs: Song[] = [
     artist: "Ed Sheeran",
     album: "x (Multiply)",
     duration: "4:41",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273k1k1k1k1k1k1k1k1k1k1k1k1",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "romantic",
     spotifyId: "3SdTKo2uVsxFblQjpScoHy"
@@ -280,7 +280,7 @@ export const romanticSongs: Song[] = [
     artist: "John Legend",
     album: "Love in the Future",
     duration: "4:29",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273l2l2l2l2l2l2l2l2l2l2l2l2",
+    albumArt: "/placeholder.svg",
     genre: "R&B",
     mood: "romantic",
     spotifyId: "3U4isOIWM3VvDubwSI3y7a"
@@ -291,7 +291,7 @@ export const romanticSongs: Song[] = [
     artist: "Adele",
     album: "19",
     duration: "3:32",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273m3m3m3m3m3m3m3m3m3m3m3m3",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "romantic",
     spotifyId: "37P2CqjY8JU6WPq2VRsqbm"
@@ -302,7 +302,7 @@ export const romanticSongs: Song[] = [
     artist: "Christina Perri",
     album: "The Twilight Saga: Breaking Dawn",
     duration: "4:45",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273n4n4n4n4n4n4n4n4n4n4n4n4",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "romantic",
     spotifyId: "6Gg1gjkQVaRcFvt7jCKfKk"
@@ -317,7 +317,7 @@ export const trendingSongs: Song[] = [
     artist: "Taylor Swift",
     album: "Midnights",
     duration: "3:20",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273bb54dde68cd23e2a268ae0f5",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "0V3wPSX9ygBnCm8psDIegu"
@@ -328,7 +328,7 @@ export const trendingSongs: Song[] = [
     artist: "Harry Styles",
     album: "Harry's House",
     duration: "2:47",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "4Dvkj6JhhA12EX05fT7y2e"
@@ -339,7 +339,7 @@ export const trendingSongs: Song[] = [
     artist: "Miley Cyrus",
     album: "Endless Summer Vacation",
     duration: "3:20",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273f58f01c2f3b8c4c8c4c8c4c8",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "0yLdNVWF3Srea0uzk55zFn"
@@ -350,7 +350,7 @@ export const trendingSongs: Song[] = [
     artist: "Taylor Swift",
     album: "Lover",
     duration: "2:58",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273e787cffec20aa2a396a61647",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "happy",
     spotifyId: "1BxfuPKGuaTgP7aM0Bbdwr"
@@ -361,7 +361,7 @@ export const trendingSongs: Song[] = [
     artist: "Olivia Rodrigo",
     album: "GUTS",
     duration: "3:39",
-    albumArt: "https://i.scdn.co/image/ab67616d0000b273e85259a1cae29a8d91f2093d",
+    albumArt: "/placeholder.svg",
     genre: "Pop",
     mood: "sad",
     spotifyId: "1kuGVB7EU95pJObxwvfwKS"
