@@ -1,0 +1,2 @@
+emotion-api/wav2vec2-ravdess-emotion/*.safetensors filter=lfs diff=lfs merge=lfs -text
+emotion-api/wav2vec2-ravdess-emotion/*.bin filter=lfs diff=lfs merge=lfs -text
