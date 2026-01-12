@@ -1,0 +1,8 @@
+```mermaid
+flowchart TD
+    A[Audio Input] --> B[Preprocessing]
+    B --> C[Feature Extraction]
+    C --> D[CNN Model]
+    D --> E[Emotion Classification]
+    E --> F[Music Recommendation]
+```

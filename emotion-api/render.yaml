@@ -1,0 +1,16 @@
+# Render deployment configuration for emotion-api
+services:
+  - type: web
+    name: aura-emotion-api
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: PORT
+        value: $PORT
+    healthCheckPath: /health
+

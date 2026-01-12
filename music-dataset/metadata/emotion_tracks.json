@@ -1,0 +1,380 @@
+[
+  {
+    "track_id": "happy_001",
+    "track_name": "I'm Feeling Good (Medium Version)",
+    "artist": "BoDleasons",
+    "album": "Happy Music Collection",
+    "genre": "Happy",
+    "duration": "3:30",
+    "file_name": "BoDleasons - I'm Feeling Good (Medium Version).mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\happy\\BoDleasons - I'm Feeling Good (Medium Version).mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "happy"
+    ],
+    "tags": [
+      "happy",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "happy_002",
+    "track_name": "Abchied Bruder (Happy Little Auld Lang Syne)",
+    "artist": "Bros II",
+    "album": "Happy Music Collection",
+    "genre": "Happy",
+    "duration": "3:30",
+    "file_name": "Bros II - Abchied Bruder (Happy Little Auld Lang Syne).mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\happy\\Bros II - Abchied Bruder (Happy Little Auld Lang Syne).mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "happy"
+    ],
+    "tags": [
+      "happy",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "happy_003",
+    "track_name": "Sunny Day - Happy Inspirational Guitar Music (Free Download MP3)",
+    "artist": "TolsetMusic",
+    "album": "Happy Music Collection",
+    "genre": "Happy",
+    "duration": "3:30",
+    "file_name": "TolsetMusic - Sunny Day - Happy Inspirational Guitar Music (Free Download MP3).mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\happy\\TolsetMusic - Sunny Day - Happy Inspirational Guitar Music (Free Download MP3).mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "happy"
+    ],
+    "tags": [
+      "happy",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "sad_001",
+    "track_name": "Sad Tension",
+    "artist": "AudioCoffee",
+    "album": "Sad Music Collection",
+    "genre": "Sad",
+    "duration": "3:30",
+    "file_name": "AudioCoffee - Sad Tension.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\sad\\AudioCoffee - Sad Tension.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "sad"
+    ],
+    "tags": [
+      "sad",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "sad_002",
+    "track_name": "Warm Abstraction",
+    "artist": "AudioCoffee",
+    "album": "Sad Music Collection",
+    "genre": "Sad",
+    "duration": "3:30",
+    "file_name": "AudioCoffee - Warm Abstraction.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\sad\\AudioCoffee - Warm Abstraction.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "sad"
+    ],
+    "tags": [
+      "sad",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "sad_003",
+    "track_name": "Sad is the Aeroplane",
+    "artist": "Colonel Trip & Captain Future",
+    "album": "Sad Music Collection",
+    "genre": "Sad",
+    "duration": "3:30",
+    "file_name": "Colonel Trip & Captain Future - Sad is the Aeroplane.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\sad\\Colonel Trip & Captain Future - Sad is the Aeroplane.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "sad"
+    ],
+    "tags": [
+      "sad",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "calm_001",
+    "track_name": "Slow Calm Documentary",
+    "artist": "ArcSound",
+    "album": "Calm Music Collection",
+    "genre": "Calm",
+    "duration": "3:30",
+    "file_name": "ArcSound - Slow Calm Documentary.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\calm\\ArcSound - Slow Calm Documentary.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "calm"
+    ],
+    "tags": [
+      "calm",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "calm_002",
+    "track_name": "Oceanic Calm",
+    "artist": "Audiorezout",
+    "album": "Calm Music Collection",
+    "genre": "Calm",
+    "duration": "3:30",
+    "file_name": "Audiorezout - Oceanic Calm.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\calm\\Audiorezout - Oceanic Calm.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "calm"
+    ],
+    "tags": [
+      "calm",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "calm_003",
+    "track_name": "Calm Lofi",
+    "artist": "Lowtone Music",
+    "album": "Calm Music Collection",
+    "genre": "Calm",
+    "duration": "3:30",
+    "file_name": "Lowtone Music - Calm Lofi.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\calm\\Lowtone Music - Calm Lofi.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "calm"
+    ],
+    "tags": [
+      "calm",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "energetic_001",
+    "track_name": "Sport Victory Energetic Rock",
+    "artist": "BlackTrendMusic",
+    "album": "Energetic Music Collection",
+    "genre": "Energetic",
+    "duration": "3:30",
+    "file_name": "BlackTrendMusic - Sport Victory Energetic Rock.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\energetic\\BlackTrendMusic - Sport Victory Energetic Rock.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "energetic"
+    ],
+    "tags": [
+      "energetic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "energetic_002",
+    "track_name": "Tropical Music Short - Happy Pop",
+    "artist": "Lowtone Music",
+    "album": "Energetic Music Collection",
+    "genre": "Energetic",
+    "duration": "3:30",
+    "file_name": "Lowtone Music - Tropical Music Short - Happy Pop.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\energetic\\Lowtone Music - Tropical Music Short - Happy Pop.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "energetic"
+    ],
+    "tags": [
+      "energetic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "energetic_003",
+    "track_name": "Energetic Upbeat Funky Pop",
+    "artist": "SoundForYou",
+    "album": "Energetic Music Collection",
+    "genre": "Energetic",
+    "duration": "3:30",
+    "file_name": "SoundForYou - Energetic Upbeat Funky Pop.mp3.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\energetic\\SoundForYou - Energetic Upbeat Funky Pop.mp3.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "energetic"
+    ],
+    "tags": [
+      "energetic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "romantic_001",
+    "track_name": "Emotional Educational Romantic Piano _ Walking Home (short 2)",
+    "artist": "Alex-Productions",
+    "album": "Romantic Music Collection",
+    "genre": "Romantic",
+    "duration": "3:30",
+    "file_name": "Alex-Productions - Emotional Educational Romantic Piano _ Walking Home (short 2).mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\romantic\\Alex-Productions - Emotional Educational Romantic Piano _ Walking Home (short 2).mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "romantic"
+    ],
+    "tags": [
+      "romantic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "romantic_002",
+    "track_name": "Delicate",
+    "artist": "Lite Saturation",
+    "album": "Romantic Music Collection",
+    "genre": "Romantic",
+    "duration": "3:30",
+    "file_name": "Lite Saturation - Delicate.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\romantic\\Lite Saturation - Delicate.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "romantic"
+    ],
+    "tags": [
+      "romantic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "romantic_003",
+    "track_name": "Lingering Touch (Romantic Beautiful Piano Music)",
+    "artist": "Lite Saturation",
+    "album": "Romantic Music Collection",
+    "genre": "Romantic",
+    "duration": "3:30",
+    "file_name": "Lite Saturation - Lingering Touch (Romantic Beautiful Piano Music).mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\romantic\\Lite Saturation - Lingering Touch (Romantic Beautiful Piano Music).mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "romantic"
+    ],
+    "tags": [
+      "romantic",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "angry_001",
+    "track_name": "Angry White American Man",
+    "artist": "David Rovics",
+    "album": "Angry Music Collection",
+    "genre": "Angry",
+    "duration": "3:30",
+    "file_name": "David Rovics - Angry White American Man.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\angry\\David Rovics - Angry White American Man.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "angry"
+    ],
+    "tags": [
+      "angry",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "angry_002",
+    "track_name": "Angry es-moll",
+    "artist": "Mystic Morrison Visions",
+    "album": "Angry Music Collection",
+    "genre": "Angry",
+    "duration": "3:30",
+    "file_name": "Mystic Morrison Visions - Angry es-moll.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\angry\\Mystic Morrison Visions - Angry es-moll.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "angry"
+    ],
+    "tags": [
+      "angry",
+      "emotional",
+      "mood"
+    ]
+  },
+  {
+    "track_id": "angry_003",
+    "track_name": "I'm Really Angry",
+    "artist": "Your Marginally Talented Photographer Girlfriend",
+    "album": "Angry Music Collection",
+    "genre": "Angry",
+    "duration": "3:30",
+    "file_name": "Your Marginally Talented Photographer Girlfriend - I'm Really Angry.mp3",
+    "file_path": "C:\\aura\\music-dataset\\emotion-tracks\\angry\\Your Marginally Talented Photographer Girlfriend - I'm Really Angry.mp3",
+    "source": "Free Music Archive",
+    "license": "CC BY",
+    "download_url": "https://freemusicarchive.org/",
+    "emotion_tags": [
+      "angry"
+    ],
+    "tags": [
+      "angry",
+      "emotional",
+      "mood"
+    ]
+  }
+]

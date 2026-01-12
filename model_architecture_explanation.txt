@@ -1,0 +1,6 @@
+CNN MODEL ARCHITECTURE FOR EMOTION DETECTION
+
+Input Layer: (None, 13, 1) [MFCC Features]
+Convolutional Blocks: 3 blocks with increasing filters (64, 128, 256)
+Dense Layers: 512 and 256 units
+Output: 5 units (emotions)

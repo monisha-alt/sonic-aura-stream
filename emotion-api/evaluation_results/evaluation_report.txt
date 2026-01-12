@@ -1,0 +1,80 @@
+
+================================================================================
+MODEL EVALUATION REPORT
+================================================================================
+Generated: 2025-11-30 12:06:10
+Model: wav2vec2-ravdess-emotion
+
+OVERALL METRICS
+================================================================================
+Accuracy:        0.7433 (74.33%)
+F1 Score (Macro): 0.7322
+F1 Score (Weighted): 0.7377
+Average Confidence: 0.9826
+
+PER-CLASS METRICS
+================================================================================
+
+NEUTRAL
+  Precision: 0.6500
+  Recall:    0.6500
+  F1-Score:  0.6500
+  Support:   40.0
+
+CALM
+  Precision: 0.7907
+  Recall:    0.8500
+  F1-Score:  0.8193
+  Support:   80.0
+
+HAPPY
+  Precision: 0.7209
+  Recall:    0.7750
+  F1-Score:  0.7470
+  Support:   80.0
+
+SAD
+  Precision: 0.6129
+  Recall:    0.4750
+  F1-Score:  0.5352
+  Support:   80.0
+
+ANGRY
+  Precision: 0.8261
+  Recall:    0.9500
+  F1-Score:  0.8837
+  Support:   80.0
+
+FEARFUL
+  Precision: 0.6471
+  Recall:    0.8250
+  F1-Score:  0.7253
+  Support:   80.0
+
+DISGUST
+  Precision: 0.8214
+  Recall:    0.5750
+  F1-Score:  0.6765
+  Support:   80.0
+
+SURPRISED
+  Precision: 0.8421
+  Recall:    0.8000
+  F1-Score:  0.8205
+  Support:   80.0
+
+================================================================================
+CONFUSION MATRIX
+================================================================================
+
+Predicted ->
+Actual | neutra   calm  happy    sad  angry fearfu disgus surpri
+----------------------------------------------------------------
+neutra |     26      4      6      0      2      2      0      0
+  calm |      8     68      4      0      0      0      0      0
+ happy |      2      0     62      6      0      4      0      6
+   sad |      4     14      2     38      0     14      8      0
+ angry |      0      0      0      0     76      0      2      2
+fearfu |      0      0      6      4      0     66      0      4
+disgus |      0      0      0     10     14     10     46      0
+surpri |      0      0      6      4      0      6      0     64

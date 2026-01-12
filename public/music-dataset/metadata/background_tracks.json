@@ -1,0 +1,170 @@
+[
+  {
+    "track_id": "bg_001",
+    "track_name": "Allthat",
+    "artist": "Bensound",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "allthat.mp3",
+    "file_path": "/music-dataset/background-tracks/allthat.mp3",
+    "source": "Bensound",
+    "license": "Royalty Free",
+    "download_url": "https://bensound.com/",
+    "attribution": "Music by Bensound",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\allthat.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_002",
+    "track_name": "Cozycoffeehouse",
+    "artist": "Bensound",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "cozycoffeehouse.mp3",
+    "file_path": "/music-dataset/background-tracks/cozycoffeehouse.mp3",
+    "source": "Bensound",
+    "license": "Royalty Free",
+    "download_url": "https://bensound.com/",
+    "attribution": "Music by Bensound",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\cozycoffeehouse.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_003",
+    "track_name": "Creativeminds",
+    "artist": "Bensound",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "creativeminds.mp3",
+    "file_path": "/music-dataset/background-tracks/creativeminds.mp3",
+    "source": "Bensound",
+    "license": "Royalty Free",
+    "download_url": "https://bensound.com/",
+    "attribution": "Music by Bensound",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\creativeminds.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_004",
+    "track_name": "Mixkit Baby Yohan 1052",
+    "artist": "Mixkit",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "mixkit-baby-yohan-1052.mp3",
+    "file_path": "/music-dataset/background-tracks/mixkit-baby-yohan-1052.mp3",
+    "source": "Mixkit",
+    "license": "Royalty Free",
+    "download_url": "https://mixkit.com/",
+    "attribution": "Music by Mixkit",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\mixkit-baby-yohan-1052.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_005",
+    "track_name": "Mixkit Holiday Fun 87",
+    "artist": "Mixkit",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "mixkit-holiday-fun-87.mp3",
+    "file_path": "/music-dataset/background-tracks/mixkit-holiday-fun-87.mp3",
+    "source": "Mixkit",
+    "license": "Royalty Free",
+    "download_url": "https://mixkit.com/",
+    "attribution": "Music by Mixkit",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\mixkit-holiday-fun-87.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_006",
+    "track_name": "Mixkit Just Kidding 11",
+    "artist": "Mixkit",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "mixkit-just-kidding-11.mp3",
+    "file_path": "/music-dataset/background-tracks/mixkit-just-kidding-11.mp3",
+    "source": "Mixkit",
+    "license": "Royalty Free",
+    "download_url": "https://mixkit.com/",
+    "attribution": "Music by Mixkit",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\mixkit-just-kidding-11.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_007",
+    "track_name": "Softvibes",
+    "artist": "Bensound",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "softvibes.mp3",
+    "file_path": "/music-dataset/background-tracks/softvibes.mp3",
+    "source": "Bensound",
+    "license": "Royalty Free",
+    "download_url": "https://bensound.com/",
+    "attribution": "Music by Bensound",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\softvibes.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "bg_008",
+    "track_name": "Theelevatorbossanova",
+    "artist": "Bensound",
+    "album": "Background Music Collection",
+    "genre": "Background",
+    "duration": "2:30",
+    "file_name": "theelevatorbossanova.mp3",
+    "file_path": "/music-dataset/background-tracks/theelevatorbossanova.mp3",
+    "source": "Bensound",
+    "license": "Royalty Free",
+    "download_url": "https://bensound.com/",
+    "attribution": "Music by Bensound",
+    "tags": [
+      "background",
+      "ambient",
+      "chill"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\background-tracks\\theelevatorbossanova.mp3",
+    "storage_type": "local"
+  }
+]

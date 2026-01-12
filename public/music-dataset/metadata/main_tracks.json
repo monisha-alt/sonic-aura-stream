@@ -1,0 +1,202 @@
+[
+  {
+    "track_id": "main_001",
+    "track_name": "Amalgam 217007",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "amalgam-217007.mp3",
+    "file_path": "/music-dataset/main-tracks/amalgam-217007.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\amalgam-217007.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_002",
+    "track_name": "Ballad Of The Forsaken Emotional Song No Copyright No Copyright 324308",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "ballad-of-the-forsaken-emotional-song-no-copyright-no-copyright-324308.mp3",
+    "file_path": "/music-dataset/main-tracks/ballad-of-the-forsaken-emotional-song-no-copyright-no-copyright-324308.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\ballad-of-the-forsaken-emotional-song-no-copyright-no-copyright-324308.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_003",
+    "track_name": "Epic Music Loop Inspirational Cinematic 385472",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "epic-music-loop-inspirational-cinematic-385472.mp3",
+    "file_path": "/music-dataset/main-tracks/epic-music-loop-inspirational-cinematic-385472.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\epic-music-loop-inspirational-cinematic-385472.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_004",
+    "track_name": "Hopeful Cinematic Ambient 349815",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "hopeful-cinematic-ambient-349815.mp3",
+    "file_path": "/music-dataset/main-tracks/hopeful-cinematic-ambient-349815.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\hopeful-cinematic-ambient-349815.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_005",
+    "track_name": "Indian Bollywood Diwali Music 306679",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "indian-bollywood-diwali-music-306679.mp3",
+    "file_path": "/music-dataset/main-tracks/indian-bollywood-diwali-music-306679.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\indian-bollywood-diwali-music-306679.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_006",
+    "track_name": "Indian Hindu Diwali Music 419361",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "indian-hindu-diwali-music-419361.mp3",
+    "file_path": "/music-dataset/main-tracks/indian-hindu-diwali-music-419361.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\indian-hindu-diwali-music-419361.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_007",
+    "track_name": "Indian Summer Part I 109078",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "indian-summer-part-i-109078.mp3",
+    "file_path": "/music-dataset/main-tracks/indian-summer-part-i-109078.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\indian-summer-part-i-109078.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_008",
+    "track_name": "Sapne Bade 305719",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "sapne-bade-305719.mp3",
+    "file_path": "/music-dataset/main-tracks/sapne-bade-305719.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\sapne-bade-305719.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_009",
+    "track_name": "The Indian 399825",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "the-indian-399825.mp3",
+    "file_path": "/music-dataset/main-tracks/the-indian-399825.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\the-indian-399825.mp3",
+    "storage_type": "local"
+  },
+  {
+    "track_id": "main_010",
+    "track_name": "Uplifting Upbeat Acoustic Guitar 237893",
+    "artist": "Unknown Artist",
+    "album": "Aura Music Collection",
+    "genre": "Ambient",
+    "duration": "3:00",
+    "file_name": "uplifting-upbeat-acoustic-guitar-237893.mp3",
+    "file_path": "/music-dataset/main-tracks/uplifting-upbeat-acoustic-guitar-237893.mp3",
+    "source": "Pixabay",
+    "license": "Pixabay License",
+    "download_url": "https://pixabay.com/music/",
+    "tags": [
+      "ambient",
+      "background",
+      "cinematic"
+    ],
+    "original_file_path": "C:\\aura\\music-dataset\\main-tracks\\uplifting-upbeat-acoustic-guitar-237893.mp3",
+    "storage_type": "local"
+  }
+]
