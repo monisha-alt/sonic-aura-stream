@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MessageCircle, Heart, Share2, Play, Pause, SkipForward, SkipBack, Volume2, Clock, Users, TrendingUp, ExternalLink } from "lucide-react";
+import { MessageCircle, Heart, Share2, Play, Pause, SkipForward, SkipBack, Volume2, Clock, Users, TrendingUp } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { trendingSongs } from "../data/realSongs";
 import { useMusicPlayer } from "../contexts/MusicPlayerContext";
@@ -14,7 +14,6 @@ const Social = () => {
     duration, 
     volume, 
     play, 
-    pause, 
     togglePlayPause, 
     next, 
     previous, 

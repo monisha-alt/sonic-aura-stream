@@ -4,7 +4,6 @@ import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useMusicLibrary } from "../hooks/useMusicLibrary";
 import { useMusicPlayer } from "../contexts/MusicPlayerContext";
-import { MusicTrack } from "../types/music";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -84,10 +83,6 @@ const Profile = () => {
     { id: 5, title: "Comment King", description: "Left 100 timestamp comments", icon: "💬", unlocked: false },
   ]);
 
-  const markAsListened = (songId: string) => {
-    // This is handled automatically when song is played
-    console.log('Marking as listened:', songId);
-  };
 
   const formatTimeAgo = (timestamp: number) => {
     const seconds = Math.floor((Date.now() - timestamp) / 1000);

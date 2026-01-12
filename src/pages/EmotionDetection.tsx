@@ -1,9 +1,8 @@
 import { motion } from "framer-motion";
-import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, Volume2, AlertCircle, Play, Pause } from "lucide-react";
+import { Brain, Mic, MicOff, Heart, Smile, Frown, Zap, AlertCircle, Play, Pause } from "lucide-react";
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useMusicLibrary } from "../hooks/useMusicLibrary";
 import { useMusicPlayer } from "../contexts/MusicPlayerContext";
-import { MusicTrack } from "../types/music";
 
 // Type definitions for SpeechRecognition API
 interface SpeechRecognition extends EventTarget {

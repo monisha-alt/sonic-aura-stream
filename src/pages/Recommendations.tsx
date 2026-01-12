@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, Play, Pause, Heart, Key, ExternalLink } from "lucide-react";
+import { Cloud, Sun, CloudRain, Moon, Sunrise, Sunset, Clock, Calendar, Play, Pause, Heart, Key } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useMusicLibrary } from "../hooks/useMusicLibrary";
 import { useMusicPlayer } from "../contexts/MusicPlayerContext";
